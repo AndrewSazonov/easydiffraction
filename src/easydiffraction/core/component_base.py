@@ -1,7 +1,9 @@
+from abc import ABC, abstractmethod
+
 from easydiffraction.core.parameter import Parameter, Descriptor
 
 
-class StandardComponentBase:
+class StandardComponentBase(ABC):
     """
     Base class for experiment and sample model components.
     Provides common functionality for CIF export and parameter handling.
