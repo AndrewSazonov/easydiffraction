@@ -41,37 +41,37 @@ class PeakBroadConstWavelength(PeakBroadBase):
             **kwargs: Keyword arguments for the base class.
         """
         super().__init__(*args, **kwargs)
-        self.gauss_u = Parameter(
+        self.gauss_u: Parameter = Parameter(
             value=0.01,
             cif_name="gauss_u",
             units="deg²",
             description="Gaussian broadening coefficient (dependent on sample size and instrument resolution)"
         )
-        self.gauss_v = Parameter(
+        self.gauss_v: Parameter = Parameter(
             value=-0.01,
             cif_name="gauss_v",
             units="deg²",
             description="Gaussian broadening coefficient (instrumental broadening contribution)"
         )
-        self.gauss_w = Parameter(
+        self.gauss_w: Parameter = Parameter(
             value=0.02,
             cif_name="gauss_w",
             units="deg²",
             description="Gaussian broadening coefficient (instrumental broadening contribution)"
         )
-        self.lorentz_x = Parameter(
+        self.lorentz_x: Parameter = Parameter(
             value=0.0,
             cif_name="lorentz_x",
             units="deg",
             description="Lorentzian broadening coefficient (dependent on sample strain effects)"
         )
-        self.lorentz_y = Parameter(
+        self.lorentz_y: Parameter = Parameter(
             value=0.0,
             cif_name="lorentz_y",
             units="deg",
             description="Lorentzian broadening coefficient (dependent on microstructural defects and strain)"
         )
-        self.mix_eta = Descriptor(
+        self.mix_eta: Descriptor = Descriptor(
             value=0.0,
             cif_name="mix_eta",
             description="Mixing parameter. Defines the ratio of Gaussian to Lorentzian broadening (not refined directly, calculated from X and Y parameters)",
@@ -95,49 +95,49 @@ class PeakBroadTimeOfFlight(PeakBroadBase):
             **kwargs: Keyword arguments for the base class.
         """
         super().__init__(*args, **kwargs)
-        self.gauss_sigma_0 = Parameter(
+        self.gauss_sigma_0: Parameter = Parameter(
             value=0.0,
             cif_name="gauss_sigma_0",
             units="µs²",
             description="Gaussian broadening coefficient (instrumental resolution)"
         )
-        self.gauss_sigma_1 = Parameter(
+        self.gauss_sigma_1: Parameter = Parameter(
             value=0.0,
             cif_name="gauss_sigma_1",
             units="µs/Å",
             description="Gaussian broadening coefficient (dependent on d-spacing)"
         )
-        self.gauss_sigma_2 = Parameter(
+        self.gauss_sigma_2: Parameter = Parameter(
             value=0.0,
             cif_name="gauss_sigma_2",
             units="µs²/Å²",
             description="Gaussian broadening coefficient (instrument-dependent term)"
         )
-        self.lorentz_gamma_0 = Parameter(
+        self.lorentz_gamma_0: Parameter = Parameter(
             value=0.0,
             cif_name="lorentz_gamma_0",
             units="µs",
             description="Lorentzian broadening coefficient (dependent on microstrain effects)"
         )
-        self.lorentz_gamma_1 = Parameter(
+        self.lorentz_gamma_1: Parameter = Parameter(
             value=0.0,
             cif_name="lorentz_gamma_1",
             units="µs/Å",
             description="Lorentzian broadening coefficient (dependent on d-spacing)"
         )
-        self.lorentz_gamma_2 = Parameter(
+        self.lorentz_gamma_2: Parameter = Parameter(
             value=0.0,
             cif_name="lorentz_gamma_2",
             units="µs²/Å²",
             description="Lorentzian broadening coefficient (instrumental-dependent term)"
         )
-        self.mix_beta_0 = Parameter(
+        self.mix_beta_0: Parameter = Parameter(
             value=0.0,
             cif_name="mix_beta_0",
             units="deg",
             description="Mixing parameter. Defines the ratio of Gaussian to Lorentzian contributions in TOF profiles"
         )
-        self.mix_beta_1 = Parameter(
+        self.mix_beta_1: Parameter = Parameter(
             value=0.0,
             cif_name="mix_beta_1",
             units="deg",

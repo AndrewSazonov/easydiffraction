@@ -75,10 +75,22 @@ class PeakAsymmEmpirConstWavelength(PeakAsymmBase):
         """
         super().__init__(*args, **kwargs)
         self._type = "empirical"
-        self.asy_1: Parameter = Parameter(value=0.0, cif_name="asy_1")
-        self.asy_2: Parameter = Parameter(value=0.0, cif_name="asy_2")
-        self.asy_3: Parameter = Parameter(value=0.0, cif_name="asy_3")
-        self.asy_4: Parameter = Parameter(value=0.0, cif_name="asy_4")
+        self.asy_1: Parameter = Parameter(
+            value=0.0,
+            cif_name="asy_1"
+        )
+        self.asy_2: Parameter = Parameter(
+            value=0.0,
+            cif_name="asy_2"
+        )
+        self.asy_3: Parameter = Parameter(
+            value=0.0,
+            cif_name="asy_3"
+        )
+        self.asy_4: Parameter = Parameter(
+            value=0.0,
+            cif_name="asy_4"
+        )
 
 
 class PeakAsymmFingerConstWavelength(PeakAsymmBase):
@@ -94,8 +106,14 @@ class PeakAsymmFingerConstWavelength(PeakAsymmBase):
         """
         super().__init__(*args, **kwargs)
         self._type = "finger"
-        self.s_l: Parameter = Parameter(value=0.0, cif_name="s_l")
-        self.d_l: Parameter = Parameter(value=0.0, cif_name="d_l")
+        self.s_l: Parameter = Parameter(
+            value=0.0,
+            cif_name="s_l"
+        )
+        self.d_l: Parameter = Parameter(
+            value=0.0,
+            cif_name="d_l"
+        )
 
 
 class PeakAsymmTimeOfFlight(PeakAsymmBase):
@@ -111,8 +129,14 @@ class PeakAsymmTimeOfFlight(PeakAsymmBase):
         """
         super().__init__(*args, **kwargs)
         self._type = "finger"
-        self.alpha_0: Parameter = Parameter(value=0.0, cif_name="alpha_0")
-        self.alpha_1: Parameter = Parameter(value=0.0, cif_name="alpha_1")
+        self.alpha_0: Parameter = Parameter(
+            value=0.0,
+            cif_name="alpha_0"
+        )
+        self.alpha_1: Parameter = Parameter(
+            value=0.0,
+            cif_name="alpha_1"
+        )
 
 
 class PeakAsymmetryFactory:
