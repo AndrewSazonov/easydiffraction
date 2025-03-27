@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Type
 from easydiffraction.core.parameter import Parameter
 from easydiffraction.core.component_base import StandardComponentBase
 from easydiffraction.utils.formatting import warning
@@ -143,7 +143,7 @@ class PeakAsymmetryFactory:
         Args:
             diffr_mode (str): Diffraction mode ('powder', 'single_crystal', etc.).
             expt_mode (str): Experiment mode ('constant_wavelength', 'time_of_flight').
-            asymm_type (str): Type of peak asymmetry.
+            asymm_type (str): Type of peak asymmetry (default: 'default').
 
         Returns:
             Optional[PeakAsymmBase]: An instance of the appropriate peak asymmetry class,
@@ -163,7 +163,7 @@ class PeakAsymmetryFactory:
         return peak_asymm_class(diffr_mode=diffr_mode, expt_mode=expt_mode)  # Instantiate the class
 
     @staticmethod
-    def get_class(expt_mode: str, asymm_type: str) -> Optional[type[PeakAsymmBase]]:
+    def get_class(expt_mode: str, asymm_type: str) -> Optional[Type[PeakAsymmBase]]:
         """
         Retrieves the appropriate peak asymmetry class based on experiment mode and type.
 
@@ -172,6 +172,6 @@ class PeakAsymmetryFactory:
             asymm_type (str): The peak asymmetry type.
 
         Returns:
-            Optional[type[PeakAsymmBase]]: The corresponding peak asymmetry class, or None if not found.
+            Optional[Type[PeakAsymmBase]]: The corresponding peak asymmetry class, or None if not found.
         """
         return PeakAsymmetryFactory._peak_asymm_classes.get(expt_mode, {}).get(asymm_type, None)
