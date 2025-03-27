@@ -155,12 +155,12 @@ class PeakAsymmetryFactory:
             print(warning(f"Peak asymmetry is not supported for diffraction mode '{diffr_mode}'. It will not be created."))
             return None  # Ensure peak_asymm attribute is not added
 
-        new_class = PeakAsymmetryFactory.get_class(expt_mode, asymm_type)
-        if not new_class:
-            print(warning(f"Invalid peak asymmetry type '{asymm_type}' for experiment mode '{expt_mode}'. Keeping the existing type."))
+        peak_asymm_class = PeakAsymmetryFactory.get_class(expt_mode, asymm_type)
+        if not peak_asymm_class:
+            print(warning(f"No valid peak asymmetry class found for experiment mode '{expt_mode}' with asymmetry type '{asymm_type}'"))
             return None
 
-        return new_class(diffr_mode=diffr_mode, expt_mode=expt_mode)
+        return peak_asymm_class(diffr_mode=diffr_mode, expt_mode=expt_mode)  # Instantiate the class
 
     @staticmethod
     def get_class(expt_mode: str, asymm_type: str) -> Optional[type[PeakAsymmBase]]:

@@ -17,11 +17,7 @@ from easydiffraction.experiments.standard_components.peak_profile import (
     PeakProfileConstWavelengthMixin,
     PeakProfileTimeOfFlightMixin,
 )
-from easydiffraction.experiments.standard_components.peak_broadening import (
-    PeakBroadBase,
-    PeakBroadConstWavelengthMixin,
-    PeakBroadTimeOfFlightMixin,
-)
+from easydiffraction.experiments.standard_components.peak_broadening import PeakBroadFactory
 from easydiffraction.experiments.standard_components.peak_asymmetry import PeakAsymmetryFactory
 from easydiffraction.experiments.iterable_components.linked_phases import LinkedPhases
 from easydiffraction.experiments.iterable_components.background import BackgroundFactory
@@ -88,11 +84,10 @@ class ExperimentFactory:
             ExperimentFactory._get_peak_profile_mixins(diffr_mode, expt_mode),
             "PeakProfile"
         )
-        instance.peak_broad = ExperimentFactory._create_component(
-            PeakBroadBase,
-            ExperimentFactory._get_peak_broad_mixins(diffr_mode, expt_mode),
-            "PeakBroad"
-        )
+
+        peak_broad = PeakBroadFactory.create(diffr_mode, expt_mode)
+        if peak_broad is not None:
+            instance.peak_broad = peak_broad
         peak_asymm = PeakAsymmetryFactory.create(diffr_mode, expt_mode)
         if peak_asymm is not None:
             instance.peak_asymm = peak_asymm
