@@ -1,3 +1,5 @@
+import os.path
+
 import numpy as np
 from abc import ABC, abstractmethod
 from typing import Union
@@ -181,6 +183,7 @@ class PowderExperiment(BaseExperiment):
             labels=['meas']
         )
 
+
 class SingleCrystalExperiment(BaseExperiment):
     """Powder experiment class with specific attributes."""
 
@@ -193,6 +196,7 @@ class SingleCrystalExperiment(BaseExperiment):
 
     def show_meas_chart(self):
         print('Showing measured data chart is not implemented yet.')
+
 
 class ExperimentFactory:
     """Creates Experiment instances with only relevant attributes."""
@@ -218,4 +222,20 @@ class ExperimentFactory:
         return expt_class_obj
 
 
-
+# User exposed API for convenience
+# TODO: Refactor based on the implementation of method add() in class Experiments
+# TODO: Think of where to keep default values for sample_form, beam_mode, radiation_probe, as they are also defined in the
+#  class ExperimentType
+def Experiment(id: str,
+               sample_form: str = "powder",
+               beam_mode: str = "constant wavelength",
+               radiation_probe: str = "neutron",
+               data_path: str = None):
+    experiment = ExperimentFactory.create(
+        id=id,
+        sample_form=sample_form,
+        beam_mode=beam_mode,
+        radiation_probe=radiation_probe
+    )
+    experiment._load_ascii_data_to_experiment(data_path)
+    return experiment
