@@ -24,13 +24,13 @@ def test_joint_neutron_xray_refinement_pd_cwl_pbso4() -> None:
 
     # Experiment 1: Neutron powder diffraction
     expt1 = Experiment(id="npd", radiation_probe="neutron", data_path="examples/data/pbso4_powder_neutron_cw.dat")
-    expt1.instr_setup.wavelength = 1.91
-    expt1.instr_calib.twotheta_offset = -0.1406
-    expt1.peak_broad.gauss_u = 0.139
-    expt1.peak_broad.gauss_v = -0.412
-    expt1.peak_broad.gauss_w = 0.386
-    expt1.peak_broad.lorentz_x = 0
-    expt1.peak_broad.lorentz_y = 0.088
+    expt1.instrument.setup_wavelength = 1.91
+    expt1.instrument.calib_twotheta_offset = -0.1406
+    expt1.peak.broad_gauss_u = 0.139
+    expt1.peak.broad_gauss_v = -0.412
+    expt1.peak.broad_gauss_w = 0.386
+    expt1.peak.broad_lorentz_x = 0
+    expt1.peak.broad_lorentz_y = 0.088
     expt1.linked_phases.add("pbso4", scale=1.5)
     for x, y in [
         (11.0, 206.1624),
@@ -46,13 +46,13 @@ def test_joint_neutron_xray_refinement_pd_cwl_pbso4() -> None:
 
     # Experiment 2: X-ray powder diffraction
     expt2 = Experiment(id="xrd", radiation_probe="xray", data_path="examples/data/pbso4_powder_xray.dat")
-    expt2.instr_setup.wavelength = 1.540567
-    expt2.instr_calib.twotheta_offset = -0.05181
-    expt2.peak_broad.gauss_u = 0.304138
-    expt2.peak_broad.gauss_v = -0.112622
-    expt2.peak_broad.gauss_w = 0.021272
-    expt2.peak_broad.lorentz_x = 0
-    expt2.peak_broad.lorentz_y = 0.057691
+    expt2.instrument.setup_wavelength = 1.540567
+    expt2.instrument.calib_twotheta_offset = -0.05181
+    expt2.peak.broad_gauss_u = 0.304138
+    expt2.peak.broad_gauss_v = -0.112622
+    expt2.peak.broad_gauss_w = 0.021272
+    expt2.peak.broad_lorentz_x = 0
+    expt2.peak.broad_lorentz_y = 0.057691
     expt2.linked_phases.add("pbso4", scale=0.001)
     for x, y in [
         (11.0, 141.8516),

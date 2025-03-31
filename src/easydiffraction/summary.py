@@ -48,7 +48,7 @@ class Summary:
             print(f'🧩 {model.model_id}')
 
             print(paragraph("Space group"))
-            print(model.space_group.name)
+            print(model.space_group.name.value)
 
             print(paragraph("Cell parameters"))
             cell_data = [[k.replace('length_', '').replace('angle_', ''), f"{v:.4f}"] for k, v in model.cell.as_dict().items()]
