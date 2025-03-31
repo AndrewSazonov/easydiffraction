@@ -62,9 +62,9 @@ class Summary:
                 fract_z = site.fract_z.value
                 b_iso = site.b_iso.value
                 atom_table.append([
-                    site.label, site.type_symbol,
+                    site.label.value, site.type_symbol.value,
                     f"{fract_x:.4f}", f"{fract_y:.4f}", f"{fract_z:.4f}",
-                    site.occupancy,
+                    site.occupancy.value,
                     f"{b_iso:.4f}"
                 ])
             headers = ["Label", "Type", "fract_x", "fract_y", "fract_z", "Occupancy", "B_iso"]
@@ -77,28 +77,28 @@ class Summary:
             print(f'🔬 {expt.id}')
 
             print(paragraph("Experiment type"))
-            print(f'{expt.expt_type.diffr_mode}, {expt.expt_type.radiation_probe}, {expt.expt_type.expt_mode}')
+            print(f'{expt.type.sample_form.value}, {expt.type.radiation_probe.value}, {expt.type.beam_mode.value}')
 
             print(paragraph("Wavelength"))
-            print(expt.instr_setup.wavelength.value)
+            print(expt.instrument.setup_wavelength.value)
 
             print(paragraph("2θ offset"))
-            print(expt.instr_calib.twotheta_offset.value)
+            print(expt.instrument.calib_twotheta_offset.value)
 
             print(paragraph("Profile type"))
-            print(expt.peak_profile.profile_type)
+            print(expt.peak.profile_type.value)
 
             print(paragraph("Peak broadening (Gaussian)"))
             print(tabulate([
-                ["U", expt.peak_broad.gauss_u.value],
-                ["V", expt.peak_broad.gauss_v.value],
-                ["W", expt.peak_broad.gauss_w.value]
+                ["U", expt.peak.broad_gauss_u.value],
+                ["V", expt.peak.broad_gauss_v.value],
+                ["W", expt.peak.broad_gauss_w.value]
             ], headers=["Parameter", "Value"], tablefmt="fancy_outline"))
 
             print(paragraph("Peak broadening (Lorentzian)"))
             print(tabulate([
-                ["X", expt.peak_broad.lorentz_x.value],
-                ["Y", expt.peak_broad.lorentz_y.value]
+                ["X", expt.peak.broad_lorentz_x.value],
+                ["Y", expt.peak.broad_lorentz_y.value]
             ], headers=["Parameter", "Value"], tablefmt="fancy_outline"))
 
         ############################

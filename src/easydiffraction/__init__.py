@@ -12,7 +12,7 @@ from easydiffraction.sample_models.sample_models import (
 
 # Experiment creation and collection management
 from easydiffraction.experiments.experiments import (
-    Experiment,
+    #Experiment,
     Experiments
 )
 

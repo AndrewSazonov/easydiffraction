@@ -35,7 +35,7 @@ class LinkedPhases:
         phase = LinkedPhase(id, scale)
         self.phases.append(phase)
 
-    def as_cif_loop(self) -> str:
+    def as_cif(self) -> str:
         # TODO: this header should be generated automatically
         lines = [
             "loop_",

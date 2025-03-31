@@ -104,17 +104,14 @@ project.save()
 
 print(ed.chapter('Step 3: Add Experiments (Instrument models and measured data)'))
 
-print(ed.section('Add experiments'))
-
-# Add two experiments
 project.experiments.add(id="npd",
-                        diffr_mode="powder",
-                        expt_mode="constant_wavelength",
+                        sample_form="powder",
+                        beam_mode="constant wavelength",
                         radiation_probe="neutron",
                         data_path="examples/data/pbso4_powder_neutron_cw.dat")
 project.experiments.add(id="xrd",
-                        diffr_mode="powder",
-                        expt_mode="constant_wavelength",
+                        sample_form="powder",
+                        beam_mode="constant wavelength",
                         radiation_probe="xray",
                         data_path="examples/data/pbso4_powder_xray.dat")
 
@@ -126,21 +123,27 @@ project.experiments['npd'].show_meas_chart(x_min=62, x_max=66)
 project.experiments['xrd'].show_meas_chart(x_min=26, x_max=28)
 
 # Modify experimental parameters
-project.experiments['npd'].instr_setup.wavelength = 1.91
-project.experiments["npd"].instr_calib.twotheta_offset = -0.1406
-project.experiments["npd"].peak_broad.gauss_u = 0.139
-project.experiments["npd"].peak_broad.gauss_v = -0.412
-project.experiments["npd"].peak_broad.gauss_w = 0.386
-project.experiments["npd"].peak_broad.lorentz_x = 0
-project.experiments["npd"].peak_broad.lorentz_y = 0.088
+project.experiments['npd'].instrument.setup_wavelength = 1.91
+project.experiments["npd"].instrument.calib_twotheta_offset = -0.1406
 
-project.experiments['xrd'].instr_setup.wavelength = 1.540567
-project.experiments["xrd"].instr_calib.twotheta_offset = -0.05181
-project.experiments["xrd"].peak_broad.gauss_u = 0.304138
-project.experiments["xrd"].peak_broad.gauss_v = -0.112622
-project.experiments["xrd"].peak_broad.gauss_w = 0.021272
-project.experiments["xrd"].peak_broad.lorentz_x = 0
-project.experiments["xrd"].peak_broad.lorentz_y = 0.057691
+project.experiments["npd"].peak.show_supported_profiles()
+project.experiments["npd"].peak.profile_type = "ikeda-carpenter"
+project.experiments["npd"].peak.show_current_profile()
+project.experiments["npd"].peak.profile_type = "split pseudo-voigt"
+project.experiments["npd"].peak.profile_type = "pseudo-voigt"
+project.experiments["npd"].peak.broad_gauss_u = 0.139
+project.experiments["npd"].peak.broad_gauss_v = -0.412
+project.experiments["npd"].peak.broad_gauss_w = 0.386
+project.experiments["npd"].peak.broad_lorentz_x = 0
+project.experiments["npd"].peak.broad_lorentz_y = 0.088
+
+project.experiments['xrd'].instrument.setup_wavelength = 1.540567
+project.experiments["xrd"].instrument.calib_twotheta_offset = -0.05181
+project.experiments["xrd"].peak.broad_gauss_u = 0.304138
+project.experiments["xrd"].peak.broad_gauss_v = -0.112622
+project.experiments["xrd"].peak.broad_gauss_w = 0.021272
+project.experiments["xrd"].peak.broad_lorentz_x = 0
+project.experiments["xrd"].peak.broad_lorentz_y = 0.057691
 
 # Link sample model to experiments
 project.experiments['npd'].linked_phases.add(id='pbso4', scale=1.0)
@@ -161,7 +164,7 @@ project.save()
 print(ed.chapter('Step 4: Analysis'))
 
 print(ed.section('Set calculator'))
-project.analysis.show_available_calculators()
+project.analysis.show_supported_calculators()
 project.analysis.show_current_calculator()
 project.analysis.current_calculator = 'crysfml'
 
@@ -250,7 +253,7 @@ project.analysis.show_meas_vs_calc_chart(expt_id="npd", x_min=62, x_max=66, show
 project.analysis.show_meas_vs_calc_chart(expt_id="xrd", x_min=26, x_max=28, show_residual=True)
 
 print(ed.section('Change calculator'))
-project.analysis.show_available_calculators()
+project.analysis.show_supported_calculators()
 project.analysis.current_calculator = 'cryspy'
 
 print(ed.section('Start 3rd fitting'))
@@ -266,7 +269,7 @@ project.analysis.show_current_refinement_strategy()
 project.analysis.refinement_strategy = 'combined'
 
 print(ed.section('Change calculator'))
-project.analysis.show_available_calculators()
+project.analysis.show_supported_calculators()
 project.analysis.show_current_calculator()
 project.analysis.current_calculator = 'crysfml'
 

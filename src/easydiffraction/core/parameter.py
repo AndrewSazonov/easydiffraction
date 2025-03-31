@@ -9,6 +9,7 @@ class Descriptor:
     def __init__(self,
                  value,
                  cif_name,
+                 pretty_name=None,
                  block_name=None,
                  units=None,
                  description=None,
@@ -16,11 +17,15 @@ class Descriptor:
         self._value = value
         self._description = description
         self._editable = editable
+        self._pretty_name = pretty_name,
         self.cif_name = cif_name
         self.units = units
         self.is_parameter = False  # Differentiates from Parameter class
         self.block_name = block_name
         self.id = self._generate_unique_id()
+
+    #def __set__(self, instance, value):
+    #    self._value = value  # Modifies the value of the descriptor
 
     def _generate_unique_id(self):
         raw_name = self.cif_name
@@ -33,18 +38,6 @@ class Descriptor:
         if self.block_name:
             return f"{self.block_name}_{sanitized}"
         return sanitized
-
-    def __get__(self, instance, owner):
-        return self._value
-
-    def __set__(self, instance, value):
-        self._value = value
-
-    def __repr__(self):
-        return f"{self._value}"
-
-    def __str__(self):
-        return str(self._value)
 
     @property
     def value(self):
@@ -73,6 +66,7 @@ class Parameter(Descriptor):
     def __init__(self,
                  value,
                  cif_name,
+                 pretty_name=None,
                  block_name=None,
                  description=None,
                  uncertainty=0.0,
@@ -82,6 +76,7 @@ class Parameter(Descriptor):
                  max_value=None):
         super().__init__(value,
                          cif_name,
+                         pretty_name,
                          block_name,
                          units,
                          description)

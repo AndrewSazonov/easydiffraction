@@ -3,7 +3,7 @@ from tabulate import tabulate
 
 from easydiffraction.utils.formatting import paragraph, info, error
 from easydiffraction.utils.chart_plotter import ChartPlotter, DEFAULT_HEIGHT
-from easydiffraction.experiments import Experiments
+from easydiffraction.experiments.experiments import Experiments
 
 from .calculators.calculator_factory import CalculatorFactory
 from .minimization import DiffractionMinimizer
@@ -73,8 +73,8 @@ class Analysis:
         print(self.current_calculator)
 
     @staticmethod
-    def show_available_calculators():
-        CalculatorFactory.show_available_calculators()
+    def show_supported_calculators():
+        CalculatorFactory.show_supported_calculators()
 
     @property
     def current_calculator(self):
@@ -82,10 +82,10 @@ class Analysis:
 
     @current_calculator.setter
     def current_calculator(self, calculator_name):
-        if calculator_name not in CalculatorFactory.list_available_calculators():
-            print(error(f"Unknown calculator '{calculator_name}'. Available calculators: {CalculatorFactory.list_available_calculators()}"))
+        calculator = CalculatorFactory.create_calculator(calculator_name)
+        if calculator is None:
             return
-        self.calculator = CalculatorFactory.create_calculator(calculator_name)
+        self.calculator = calculator
         self._calculator_key = calculator_name
         print(paragraph("Current calculator changed to"))
         print(self.current_calculator)

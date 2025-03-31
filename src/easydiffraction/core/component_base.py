@@ -50,7 +50,13 @@ class StandardComponentBase(ABC):
                 continue
 
             full_cif_name = f"{self.cif_category_name}.{attr_obj.cif_name}"
-            line = f"{full_cif_name} {attr_obj.value}"
+
+            formatted_value = attr_obj.value
+            if isinstance(formatted_value, str) and " " in formatted_value:
+                # If the value is a string with spaces, wrap it in double quotes
+                formatted_value = f'"{formatted_value}"'
+
+            line = f"{full_cif_name} {formatted_value}"
 
             # Append units as comment (if any)
             if hasattr(attr_obj, "units") and attr_obj.units:
