@@ -138,12 +138,6 @@ class SampleModels(BaseCollection):
         """
         return "\n".join([model.as_cif() for model in self._models.values()])
 
-    def __getitem__(self, model_id):
-        """
-        Access a sample model by its ID.
-        """
-        return self._models[model_id]
-
     def _add_prebuilt_sample_model(self, model):
         """
         Add a pre-built SampleModel instance.

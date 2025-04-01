@@ -17,9 +17,6 @@ class Experiments(BaseCollection):
         super().__init__()
         self._experiments = self._items  # Alias for legacy support
 
-    def __getitem__(self, experiment_id):
-        return self._experiments[experiment_id]
-
     def add(
         self,
         experiment=None,

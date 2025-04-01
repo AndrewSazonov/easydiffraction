@@ -11,6 +11,12 @@ class BaseCollection:
     def __init__(self):
         self._items = {}
 
+    def __getitem__(self, key):
+        return self._items[key]
+
+    def __iter__(self):
+        return iter(self._items.values())
+
     def get_all_parameters(self):
         """
         Collects all parameters from each item and its components, including nested collections.
