@@ -96,7 +96,7 @@ class Instrument(StandardComponentBase):
             super().__setattr__(name, value)
 
     def _attach_attributes(self, beam_mode: str):
-        new_class = InstrumentFactory._supported_classes[beam_mode]
+        new_class = InstrumentFactory._supported[beam_mode]
         new_obj = new_class()
 
         # Collect names of new attributes
@@ -119,7 +119,7 @@ class Instrument(StandardComponentBase):
 
 
 class InstrumentFactory:
-    _supported_classes = {
+    _supported = {
         "constant wavelength": ConstantWavelength,
         "time-of-flight": TimeOfFlight
     }
@@ -129,8 +129,8 @@ class InstrumentFactory:
         """
         Create and return a Peak instance configured for a specific experimental mode and profile.
         """
-        if beam_mode not in cls._supported_classes:
-            supported_beam_modes = list(cls._supported_classes.keys())
+        if beam_mode not in cls._supported:
+            supported_beam_modes = list(cls._supported.keys())
 
             raise ValueError(
                 f"Unsupported beam mode: '{beam_mode}'.\n "

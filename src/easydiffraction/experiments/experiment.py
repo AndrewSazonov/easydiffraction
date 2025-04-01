@@ -224,7 +224,7 @@ class SingleCrystalExperiment(BaseExperiment):
 
 class ExperimentFactory:
     """Creates Experiment instances with only relevant attributes."""
-    _supported_classes = {
+    _supported = {
         "powder": PowderExperiment,
         "single crystal": SingleCrystalExperiment
     }
@@ -237,7 +237,7 @@ class ExperimentFactory:
             radiation_probe: str
     ) -> Union[PowderExperiment, SingleCrystalExperiment]:
         """Dynamically creates an Experiment instance with relevant attributes."""
-        expt_class = ExperimentFactory._supported_classes.get(sample_form)
+        expt_class = ExperimentFactory._supported.get(sample_form)
         expt_type = ExperimentType(sample_form=sample_form,
                                    beam_mode=beam_mode,
                                    radiation_probe=radiation_probe)
