@@ -51,8 +51,7 @@ class PolynomialTerm:
 
 class BackgroundBase(ABC):
     """Base background class."""
-    def __init__(self, type: str=DEFAULT_BACKGROUND_TYPE):
-        self._type = type
+    def __init__(self):
         self._data = []
 
     @abstractmethod
@@ -66,10 +65,6 @@ class BackgroundBase(ABC):
     @abstractmethod
     def show(self):
         pass
-
-    @property
-    def type(self):
-        return self._type
 
 
 class LineSegmentBackground(BackgroundBase):
@@ -191,7 +186,8 @@ class BackgroundFactory:
     }
 
     @classmethod
-    def create(cls, background_type=DEFAULT_BACKGROUND_TYPE):
+    def create(cls,
+               background_type=DEFAULT_BACKGROUND_TYPE):
         if background_type not in cls._supported:
             supported_types = list(cls._supported.keys())
 

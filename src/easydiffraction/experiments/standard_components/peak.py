@@ -1,14 +1,13 @@
-import tabulate
-
-from easydiffraction.utils.formatting import paragraph, warning
+from easydiffraction.core.parameter import Descriptor, Parameter
 from easydiffraction.core.component_base import StandardComponentBase
-from easydiffraction.core.parameter import Parameter, Descriptor
 
-class Broadening:
-    """Encapsulates all possible peak broadening parameters as attributes."""
+DEFAULT_BEAM_MODE = "constant wavelength"
+DEFAULT_PROFILE_TYPE = "pseudo-voigt"
 
-    def __init__(self):
-        # Constant wavelength specific parameters
+
+# --- Mixins ---
+class ConstantWavelengthBroadeningMixin:
+    def _add_constant_wavelength_broadening(self):
         self.broad_gauss_u: Parameter = Parameter(
             value=0.01,
             cif_name="broad_gauss_u",
@@ -39,15 +38,10 @@ class Broadening:
             units="deg",
             description="Lorentzian broadening coefficient (dependent on microstructural defects and strain)"
         )
-        self.broad_mix_eta: Descriptor = Descriptor(
-            # TODO: This should be a Parameter, but it cannot be refined
-            value=0.0,
-            cif_name="broad_mix_eta",
-            description="Mixing parameter. Defines the ratio of Gaussian to Lorentzian broadening (not refined directly, calculated from X and Y parameters)",
-            editable=False
-        )
 
-        # Time-of-flight specific parameters
+
+class TimeOfFlightBroadeningMixin:
+    def _add_time_of_flight_broadening(self):
         self.broad_gauss_sigma_0: Parameter = Parameter(
             value=0.0,
             cif_name="gauss_sigma_0",
@@ -98,10 +92,8 @@ class Broadening:
         )
 
 
-class Asymmetry:
-    """Encapsulates all possible peak asymmetry parameters as attributes."""
-
-    def __init__(self):
+class EmpiricalAsymmetryMixin:
+    def _add_empirical_asymmetry(self):
         self.asym_empir_1: Parameter = Parameter(
             value=0.1,
             cif_name="asym_empir_1",
@@ -126,6 +118,10 @@ class Asymmetry:
             units="",
             description="Empirical asymmetry coefficient p4"
         )
+
+
+class FcjAsymmetryMixin:
+    def _add_fcj_asymmetry(self):
         self.asym_fcj_1: Parameter = Parameter(
             value=0.01,
             cif_name="asym_fcj_1",
@@ -138,6 +134,10 @@ class Asymmetry:
             units="",
             description="FCJ asymmetry coefficient 2"
         )
+
+
+class IkedaCarpenterAsymmetryMixin:
+    def _add_ikeda_carpenter_asymmetry(self):
         self.asym_alpha_0: Parameter = Parameter(
             value=0.01,
             cif_name="asym_alpha_0",
@@ -151,179 +151,102 @@ class Asymmetry:
             description="Ikeda-Carpenter asymmetry parameter α₁"
         )
 
-
-class ConstantWavelengthPseudoVoigt:
-    _description = 'Pseudo-Voigt profile'
-    def __init__(self):
-        self.broad_gauss_u = Broadening().broad_gauss_u
-        self.broad_gauss_v = Broadening().broad_gauss_v
-        self.broad_gauss_w = Broadening().broad_gauss_w
-        self.broad_lorentz_x = Broadening().broad_lorentz_x
-        self.broad_lorentz_y = Broadening().broad_lorentz_y
-
-class ConstantWavelengthSplitPseudoVoigt:
-    _description = 'Split pseudo-Voigt profile'
-    def __init__(self):
-        self.broad_gauss_u = Broadening().broad_gauss_u
-        self.broad_gauss_v = Broadening().broad_gauss_v
-        self.broad_gauss_w = Broadening().broad_gauss_w
-        self.broad_lorentz_x = Broadening().broad_lorentz_x
-        self.broad_lorentz_y = Broadening().broad_lorentz_y
-        self.asym_empir_1 = Asymmetry().asym_empir_1
-        self.asym_empir_2 = Asymmetry().asym_empir_2
-        self.asym_empir_3 = Asymmetry().asym_empir_3
-        self.asym_empir_4 = Asymmetry().asym_empir_4
-
-class ConstantWavelengthThompsonCoxHastings:
-    _description = 'Thompson-Cox-Hastings profile'
-    def __init__(self):
-        self.broad_gauss_u = Broadening().broad_gauss_u
-        self.broad_gauss_v = Broadening().broad_gauss_v
-        self.broad_gauss_w = Broadening().broad_gauss_w
-        self.broad_lorentz_x = Broadening().broad_lorentz_x
-        self.broad_lorentz_y = Broadening().broad_lorentz_y
-        self.asym_fcj_1 = Asymmetry().asym_fcj_1
-        self.asym_fcj_2 = Asymmetry().asym_fcj_2
-
-class TimeOfFlightPseudoVoigt:
-    _description = 'Pseudo-Voigt profile'
-    def __init__(self):
-        self.broad_gauss_sigma_0 = Broadening().broad_gauss_sigma_0
-        self.broad_gauss_sigma_1 = Broadening().broad_gauss_sigma_1
-        self.broad_gauss_sigma_2 = Broadening().broad_gauss_sigma_2
-        self.broad_lorentz_gamma_0 = Broadening().broad_lorentz_gamma_0
-        self.broad_lorentz_gamma_1 = Broadening().broad_lorentz_gamma_1
-        self.broad_lorentz_gamma_2 = Broadening().broad_lorentz_gamma_2
-
-class TimeOfFlightIkedaCarpenter:
-    _description = 'Ikeda-Carpenter profile'
-    def __init__(self):
-        self.broad_gauss_sigma_0 = Broadening().broad_gauss_sigma_0
-        self.broad_gauss_sigma_1 = Broadening().broad_gauss_sigma_1
-        self.broad_gauss_sigma_2 = Broadening().broad_gauss_sigma_2
-        self.asym_alpha_0 = Asymmetry().asym_alpha_0
-        self.asym_alpha_1 = Asymmetry().asym_alpha_1
-
-class TimeOfFlightPseudoVoigtIkedaCarpenter:
-    _description = 'Pseudo-Voigt * Ikeda-Carpenter profile'
-    def __init__(self):
-        self.broad_gauss_sigma_0 = Broadening().broad_gauss_sigma_0
-        self.broad_gauss_sigma_1 = Broadening().broad_gauss_sigma_1
-        self.broad_gauss_sigma_2 = Broadening().broad_gauss_sigma_2
-        self.broad_lorentz_gamma_0 = Broadening().broad_lorentz_gamma_0
-        self.broad_lorentz_gamma_1 = Broadening().broad_lorentz_gamma_1
-        self.broad_lorentz_gamma_2 = Broadening().broad_lorentz_gamma_2
-        self.asym_alpha_0 = Asymmetry().asym_alpha_0
-        self.asym_alpha_1 = Asymmetry().asym_alpha_1
-
-class TimeOfFlightPseudoVoigtBackToBackExponential:
-    _description = 'Convolution of pseudo-Voigt with back-to-back exponential functions.'
-    def __init__(self):
-        self.broad_gauss_sigma_0 = Broadening().broad_gauss_sigma_0
-        self.broad_gauss_sigma_1 = Broadening().broad_gauss_sigma_1
-        self.broad_gauss_sigma_2 = Broadening().broad_gauss_sigma_2
-        self.broad_lorentz_gamma_0 = Broadening().broad_lorentz_gamma_0
-        self.broad_lorentz_gamma_1 = Broadening().broad_lorentz_gamma_1
-        self.broad_lorentz_gamma_2 = Broadening().broad_lorentz_gamma_2
-        self.asym_alpha_0 = Asymmetry().asym_alpha_0
-        self.asym_alpha_1 = Asymmetry().asym_alpha_1
-
-class Peak(StandardComponentBase):
+# --- Base peak class ---
+class PeakBase(StandardComponentBase):
     cif_category_name = "_peak"
 
-    def __init__(self, beam_mode: str):
-        self._beam_mode = beam_mode
-        self._supported_profiles = self._get_supported_profiles(beam_mode)
-        self._profile_type = self._get_default_profile()
-        self._attach_attributes(self._profile_type.value)
-        self._locked = True  # Lock further attribute additions
+    def __init__(self):
+        super().__init__()
 
     def __setattr__(self, name, value):
-        if hasattr(self, '_locked') and self._locked:
+        if hasattr(self, "_locked") and self._locked:
             if not hasattr(self, name):
-                raise AttributeError(f"Cannot add new attribute '{name}' to locked class '{self.__class__.__name__}'")
+                raise AttributeError(f"Cannot add new attribute '{name}' to locked instance of '{self.__class__.__name__}'")
 
         current = getattr(self, name, None)
-        if isinstance(current, Parameter):
+        if isinstance(current, (Descriptor, Parameter)):
             current.value = value
         else:
             super().__setattr__(name, value)
 
-    def _get_supported_profiles(self, beam_mode: str):
-        return PeakFactory._supported_profiles[beam_mode]
 
-    def _get_default_profile(self):
-        default_profile = next(iter(self._supported_profiles))
-        return Descriptor(
-            value=default_profile,
-            cif_name="profile_typ",
-            description="..."
-        )
-
-    def _attach_attributes(self, profile_type: str):
-        self._profile_type.value = profile_type
-
-        profile_class = self._supported_profiles[self._profile_type.value]
-        new_profile_obj = profile_class()
-
-        # Collect names of new attributes
-        new_attrs = {
-            name for name in dir(new_profile_obj)
-            if not name.startswith("_") and not callable(getattr(new_profile_obj, name))
-        }
-
-        # Remove old Parameter-type attributes that are not in the new profile
-        for attr in dir(self):
-            val = getattr(self, attr)
-            if isinstance(val, Parameter) and attr not in new_attrs:
-                delattr(self, attr)
-
-        # Assign new Parameter-type attributes for the new profile type
-        self._locked = False
-        for attr in new_attrs:
-            setattr(self, attr, getattr(new_profile_obj, attr))
-        self._locked = True
-
-    @property
-    def profile_type(self):
-        return self._profile_type
-
-    @profile_type.setter
-    def profile_type(self, name: str):
-        if name in self._supported_profiles:
-            print(paragraph("Current peak profile changed to"))
-            print(name)
-        else:
-            supported_profiles = list(self._supported_profiles.keys())
-            print(warning(f"Unknown peak profile '{name}'"))
-            print(f'Supported peak profiles: {supported_profiles}')
-            print(f"For more information, use 'show_supported_profiles()'")
-
-    def show_supported_profiles(self):
-        header = ["Peak profile", "Description"]
-        table_data = []
-
-        for name, config in self._supported_profiles.items():
-            description = getattr(config, '_description', 'No description provided.')
-            table_data.append([name, description])
-
-        print(paragraph("Supported peak profiles"))
-        print(tabulate.tabulate(
-            table_data,
-            headers=header,
-            tablefmt="fancy_outline",
-            numalign="left",
-            stralign="left",
-            showindex=False
-        ))
-
-    def show_current_profile(self):
-        print(paragraph("Current peak profile"))
-        print(self._profile_type.value)
+# --- Derived peak classes ---
+class ConstantWavelengthPseudoVoigt(PeakBase,
+                                    ConstantWavelengthBroadeningMixin):
+    _description = "Pseudo-Voigt profile"
+    def __init__(self):
+        super().__init__()
+        self._add_constant_wavelength_broadening()
+        self._locked = True  # Lock further attribute additions
 
 
+class ConstantWavelengthSplitPseudoVoigt(PeakBase,
+                                         ConstantWavelengthBroadeningMixin,
+                                         EmpiricalAsymmetryMixin):
+    _description = "Split pseudo-Voigt profile"
+    def __init__(self):
+        super().__init__()
+        self._add_constant_wavelength_broadening()
+        self._add_empirical_asymmetry()
+        self._locked = True  # Lock further attribute additions
+
+
+class ConstantWavelengthThompsonCoxHastings(PeakBase,
+                                            ConstantWavelengthBroadeningMixin,
+                                            FcjAsymmetryMixin):
+    _description = "Thompson-Cox-Hastings profile"
+    def __init__(self):
+        super().__init__()
+        self._add_constant_wavelength_broadening()
+        self._add_fcj_asymmetry()
+        self._locked = True  # Lock further attribute additions
+
+
+class TimeOfFlightPseudoVoigt(PeakBase,
+                              TimeOfFlightBroadeningMixin):
+    _description = "Pseudo-Voigt profile"
+    def __init__(self):
+        super().__init__()
+        self._add_time_of_flight_broadening()
+        self._locked = True  # Lock further attribute additions
+
+
+class TimeOfFlightIkedaCarpenter(PeakBase,
+                                 TimeOfFlightBroadeningMixin,
+                                 IkedaCarpenterAsymmetryMixin):
+    _description = "Ikeda-Carpenter profile"
+    def __init__(self):
+        super().__init__()
+        self._add_time_of_flight_broadening()
+        self._add_ikeda_carpenter_asymmetry()
+        self._locked = True  # Lock further attribute additions
+
+
+class TimeOfFlightPseudoVoigtIkedaCarpenter(PeakBase,
+                                            TimeOfFlightBroadeningMixin,
+                                            IkedaCarpenterAsymmetryMixin):
+    _description = "Pseudo-Voigt * Ikeda-Carpenter profile"
+    def __init__(self):
+        super().__init__()
+        self._add_time_of_flight_broadening()
+        self._add_ikeda_carpenter_asymmetry()
+        self._locked = True  # Lock further attribute additions
+
+
+class TimeOfFlightPseudoVoigtBackToBackExponential(PeakBase,
+                                                   TimeOfFlightBroadeningMixin,
+                                                   IkedaCarpenterAsymmetryMixin):
+    _description = "Pseudo-Voigt * Back-to-Back Exponential profile"
+    def __init__(self):
+        super().__init__()
+        self._add_time_of_flight_broadening()
+        self._add_ikeda_carpenter_asymmetry()
+        self._locked = True  # Lock further attribute additions
+
+
+# --- Peak factory ---
 class PeakFactory:
-    _supported_profiles = {
+    _supported = {
         "constant wavelength": {
             "pseudo-voigt": ConstantWavelengthPseudoVoigt,
             "split pseudo-voigt": ConstantWavelengthSplitPseudoVoigt,
@@ -333,24 +256,29 @@ class PeakFactory:
             "pseudo-voigt": TimeOfFlightPseudoVoigt,
             "ikeda-carpenter": TimeOfFlightIkedaCarpenter,
             "pseudo-voigt * ikeda-carpenter": TimeOfFlightPseudoVoigtIkedaCarpenter,
-            "pseudo-voigt * back-to-back": TimeOfFlightPseudoVoigtBackToBackExponential,
+            "pseudo-voigt * back-to-back": TimeOfFlightPseudoVoigtBackToBackExponential
         }
     }
 
     @classmethod
-    def create(cls, beam_mode, profile_type=None):
-        """
-        Create and return a Peak instance configured for a specific experimental mode and profile.
-        """
-        if beam_mode not in cls._supported_profiles:
-            raise ValueError(f"Unsupported beam mode: '{beam_mode}'")
+    def create(cls,
+               beam_mode=DEFAULT_BEAM_MODE,
+               profile_type=DEFAULT_PROFILE_TYPE):
+        if beam_mode not in cls._supported:
+            supported_beam_modes = list(cls._supported.keys())
 
-        supported_profiles = cls._supported_profiles[beam_mode]
-
-        if profile_type is not None and profile_type not in supported_profiles:
             raise ValueError(
-                f"Unsupported profile type '{profile_type}' for mode '{beam_mode}'.\n"
-                f"Supported profiles are: {list(supported_profiles.keys())}"
+                f"Unsupported beam mode: '{beam_mode}'.\n "
+                f"Supported beam modes are: {supported_beam_modes}"
             )
 
-        return Peak(beam_mode)
+        supported_types = cls._supported[beam_mode]
+
+        if profile_type is not None and profile_type not in supported_types:
+            raise ValueError(
+                f"Unsupported profile type '{profile_type}' for mode '{beam_mode}'.\n"
+                f"Supported profiles are: {list(supported_types.keys())}"
+            )
+
+        peak_class = cls._supported[beam_mode][profile_type]
+        return peak_class()

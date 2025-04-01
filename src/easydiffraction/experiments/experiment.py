@@ -12,7 +12,7 @@ from easydiffraction.experiments.iterable_components.linked_phases import Linked
 from easydiffraction.experiments.iterable_components.background import BackgroundFactory
 from easydiffraction.experiments.iterable_components.datastore import DatastoreFactory
 
-from easydiffraction.utils.formatting import paragraph
+from easydiffraction.utils.formatting import paragraph, warning
 from easydiffraction.utils.chart_plotter import ChartPlotter
 
 
@@ -122,6 +122,8 @@ class PowderExperiment(BaseExperiment):
                  type: ExperimentType):
         super().__init__(id=id,
                          type=type)
+        self._peak_profile_type = ""
+        self._background_type = ""
         self.peak = PeakFactory.create(beam_mode=self.type.beam_mode.value)
         self.linked_phases = LinkedPhases()
         self.background = BackgroundFactory.create()
@@ -175,16 +177,61 @@ class PowderExperiment(BaseExperiment):
         )
 
     @property
+    def peak_profile_type(self):
+        return self._peak_profile_type
+
+    @peak_profile_type.setter
+    def peak_profile_type(self, new_type: str):
+        if new_type not in PeakFactory._supported[self.type.beam_mode.value]:
+            supported_types = list(PeakFactory._supported[self.type.beam_mode.value].keys())
+            print(warning(f"Unknown peak profile '{new_type}'"))
+            print(f'Supported peak profiles: {supported_types}')
+            print(f"For more information, use 'show_supported_peak_profile_types()'")
+            return
+        self.peak = PeakFactory.create(beam_mode=self.type.beam_mode.value,
+                                       profile_type=new_type)
+        self._peak_profile_type = new_type
+        print(paragraph(f"Peak profile type for experiment '{self.id}' changed to"))
+        print(new_type)
+
+    def show_supported_peak_profile_types(self):
+        header = ["Peak profile type", "Description"]
+        table_data = []
+
+        for name, config in PeakFactory._supported[self.type.beam_mode.value].items():
+            description = getattr(config, '_description', 'No description provided.')
+            table_data.append([name, description])
+
+        print(paragraph("Supported peak profile types"))
+        print(tabulate.tabulate(
+            table_data,
+            headers=header,
+            tablefmt="fancy_outline",
+            numalign="left",
+            stralign="left",
+            showindex=False
+        ))
+
+    def show_current_peak_profile_type(self):
+        print(paragraph("Current background type"))
+        print(self.peak_profile_type)
+
+    @property
     def background_type(self):
-        return self.background.type
+        return self._background_type
 
     @background_type.setter
-    def background_type(self, name):
-        if name not in BackgroundFactory._supported:
-            raise ValueError(f"Background type '{name}' is not supported. Supported types: {list(BackgroundFactory._supported.keys())}")
-        self.background = BackgroundFactory.create(name)
+    def background_type(self, new_type):
+        if new_type not in BackgroundFactory._supported:
+            supported_types = list(BackgroundFactory._supported.keys())
+            print(warning(f"Unknown background type '{new_type}'"))
+            print(f'Supported background types: {supported_types}')
+            print(f"For more information, use 'show_supported_background_types()'")
+            return
+        self.background = BackgroundFactory.create(new_type)
+        self._background_type = new_type
         print(paragraph(f"Background type for experiment '{self.id}' changed to"))
-        print(name)
+        print(new_type)
 
     def show_supported_background_types(self):
         header = ["Background type", "Description"]
@@ -206,7 +253,7 @@ class PowderExperiment(BaseExperiment):
 
     def show_current_background_type(self):
         print(paragraph("Current background type"))
-        print(self.background.type)
+        print(self.background_type)
 
 class SingleCrystalExperiment(BaseExperiment):
     """Powder experiment class with specific attributes."""

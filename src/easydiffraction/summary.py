@@ -86,7 +86,7 @@ class Summary:
             print(expt.instrument.calib_twotheta_offset.value)
 
             print(paragraph("Profile type"))
-            print(expt.peak.profile_type.value)
+            print(expt.peak_profile_type)
 
             print(paragraph("Peak broadening (Gaussian)"))
             print(tabulate([

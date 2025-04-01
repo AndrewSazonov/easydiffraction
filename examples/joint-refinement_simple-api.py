@@ -126,11 +126,11 @@ project.experiments['xrd'].show_meas_chart(x_min=26, x_max=28)
 project.experiments['npd'].instrument.setup_wavelength = 1.91
 project.experiments["npd"].instrument.calib_twotheta_offset = -0.1406
 
-project.experiments["npd"].peak.show_supported_profiles()
-project.experiments["npd"].peak.profile_type = "ikeda-carpenter"
-project.experiments["npd"].peak.show_current_profile()
-project.experiments["npd"].peak.profile_type = "split pseudo-voigt"
-project.experiments["npd"].peak.profile_type = "pseudo-voigt"
+project.experiments["npd"].show_supported_peak_profile_types()
+project.experiments["npd"].peak_profile_type = "ikeda-carpenter"
+project.experiments["npd"].show_current_peak_profile_type()
+project.experiments["npd"].peak_profile_type = "split pseudo-voigt"
+project.experiments["npd"].peak_profile_type = "pseudo-voigt"
 project.experiments["npd"].peak.broad_gauss_u = 0.139
 project.experiments["npd"].peak.broad_gauss_v = -0.412
 project.experiments["npd"].peak.broad_gauss_w = 0.386
