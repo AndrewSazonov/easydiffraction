@@ -10,7 +10,7 @@ class Setup:
             value=1.5406,
             cif_name="wavelength",
             units="Å",
-            description="..."
+            description="Incident neutron or X-ray wavelength"
         )
 
         # Time-of-flight specific parameters
@@ -18,7 +18,7 @@ class Setup:
             value=-0.01,
             cif_name="2theta_bank",
             units="deg",
-            description="..."
+            description="Position of the detector bank in TOF experiments"
         )
 
 
@@ -31,7 +31,7 @@ class Calibration:
             value=0,
             cif_name="2theta_offset",
             units="deg",
-            description="..."
+            description="Accounts for instrument misalignment, leading to a constant shift in peak positions"
         )
 
         # Time-of-flight specific parameters
@@ -39,25 +39,25 @@ class Calibration:
             value=0.1,
             cif_name="d_to_tof_offset",
             units="µs",
-            description="..."
+            description="A constant offset in TOF scale, representing an instrument-dependent time delay correction"
         )
         self.d_to_tof_linear: Parameter = Parameter(
             value=0.2,
             cif_name="d_to_tof_linear",
             units="µs/Å",
-            description="..."
+            description="The primary scaling factor that converts d-spacing (d) to time-of-flight (TOF) using a linear relationship"
         )
         self.d_to_tof_quad: Parameter = Parameter(
             value=0.3,
             cif_name="d_to_tof_quad",
             units="µs/Å²",
-            description="..."
+            description="A quadratic correction term that refines the non-linearity in the d-spacing to TOF conversion"
         )
         self.d_to_tof_recip: Parameter = Parameter(
             value=0.4,
             cif_name="d_to_tof_recip",
             units="µs·Å",
-            description="..."
+            description="A velocity-dependent correction term, introduced to compensate for neutron velocity dispersion"
         )
 
 

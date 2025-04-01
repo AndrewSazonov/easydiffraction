@@ -18,18 +18,16 @@ class Point:
         self.x = Descriptor(
             value=x,
             cif_name='line_segment_X',
-            description="..."
+            description="X-coordinates used to create many straight-line segments representing the background in a calculated diffractogram."
         )
         self.y = Parameter(
             value=y,
             cif_name='line_segment_intensity',
-            description="..."
+            description="Intensity used to create many straight-line segments representing the background in a calculated diffractogram"
         )
 
     def as_cif(self) -> str:
-        return (
-            f"{self.x.value} {self.y.value}"
-        )
+        return (f"{self.x.value} {self.y.value}")
 
 class PolynomialTerm:
     cif_category_name = "_pd_background"
@@ -38,18 +36,17 @@ class PolynomialTerm:
         self.order = Descriptor(
             value=order,
             cif_name='Chebyshev_order',
-            description="..."
+            description="The value of an order used in a Chebyshev polynomial equation representing the background in a calculated diffractogram"
         )
         self.coef = Parameter(
             value=coef,
             cif_name='Chebyshev_coef',
-            description="..."
+            description="The value of a coefficient used in a Chebyshev polynomial equation representing the background in a calculated diffractogram"
         )
 
+
     def as_cif(self) -> str:
-        return (
-            f"{self.order.value} {self.coef.value}"
-        )
+        return (f"{self.order.value} {self.coef.value}")
 
 
 class BackgroundBase(ABC):

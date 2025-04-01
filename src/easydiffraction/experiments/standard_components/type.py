@@ -12,15 +12,15 @@ class ExperimentType(StandardComponentBase):
         self.sample_form: Descriptor = Descriptor(
             value=sample_form,
             cif_name="sample_form",
-            description="..."
+            description="Specifies whether the diffraction data corresponds to powder diffraction or single crystal diffraction"
         )
         self.beam_mode: Descriptor = Descriptor(
             value=beam_mode,
             cif_name="beam_mode",
-            description="..."
+            description="Defines whether the measurement is performed with a constant wavelength (CW) or time-of-flight (TOF) method"
         )
         self.radiation_probe: Descriptor = Descriptor(
             value=radiation_probe,
             cif_name="radiation_probe",
-            description="..."
+            description="Specifies whether the measurement uses neutrons or X-rays"
         )
