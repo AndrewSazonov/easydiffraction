@@ -58,8 +58,9 @@ class AtomSites(IterableComponent):
     Collection of AtomSite instances.
     Provides methods to add, show, and access atom sites.
     """
-    cif_category_name = "_atom_site"
-
+    @property
+    def cif_category_name(self):
+        return "_atom_site"
 
     def add(self,
             label: str,

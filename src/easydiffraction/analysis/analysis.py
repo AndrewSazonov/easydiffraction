@@ -122,7 +122,7 @@ class Analysis:
 
     def show_available_refinement_strategies(self):
         strategies = [
-            {"Strategy": "single", "Description": "Refine each experiment separately one after another"},
+            {"Strategy": "single", "Description": "Refine each experiment separately (one after another)"},
             {"Strategy": "combined", "Description": "Perform joint refinement of all experiments"},
         ]
         print(paragraph("Available refinement strategies"))

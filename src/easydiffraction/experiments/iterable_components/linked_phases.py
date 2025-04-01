@@ -19,7 +19,9 @@ class LinkedPhase(IterableComponentRow):
 
 
 class LinkedPhases(IterableComponent):
-    cif_category_name = "_pd_phase_block"
+    @property
+    def cif_category_name(self):
+        return "_pd_phase_block"
 
     def add(self, id: str, scale: float):
         phase = LinkedPhase(id, scale)

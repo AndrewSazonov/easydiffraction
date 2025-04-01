@@ -3,7 +3,9 @@ from easydiffraction.core.parameter import Descriptor
 
 
 class ExperimentType(StandardComponent):
-    cif_category_name = "_expt_type"
+    @property
+    def cif_category_name(self):
+        return "_expt_type"
 
     def __init__(self,
                  sample_form: str = "powder",

@@ -46,7 +46,9 @@ class PolynomialTerm(IterableComponentRow):
 
 
 class BackgroundBase(IterableComponent):
-    cif_category_name = "_pd_background"
+    @property
+    def cif_category_name(self):
+        return "_pd_background"
 
     @abstractmethod
     def add(self, *args):

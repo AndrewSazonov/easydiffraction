@@ -5,7 +5,9 @@ class Cell(StandardComponent):
     """
     Represents the unit cell parameters of a sample model.
     """
-    cif_category_name = "_cell"
+    @property
+    def cif_category_name(self):
+        return "_cell"
 
     def __init__(self,
                  length_a=10.0,

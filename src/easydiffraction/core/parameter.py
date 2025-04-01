@@ -24,9 +24,6 @@ class Descriptor:
         self.block_name = block_name
         self.id = self._generate_unique_id()
 
-    #def __set__(self, instance, value):
-    #    self._value = value  # Modifies the value of the descriptor
-
     def _generate_unique_id(self):
         raw_name = self.cif_name
         sanitized = (

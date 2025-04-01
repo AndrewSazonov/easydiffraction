@@ -153,7 +153,9 @@ class IkedaCarpenterAsymmetryMixin:
 
 # --- Base peak class ---
 class PeakBase(StandardComponent):
-    cif_category_name = "_peak"
+    @property
+    def cif_category_name(self):
+        return "_peak"
 
     def __init__(self):
         super().__init__()

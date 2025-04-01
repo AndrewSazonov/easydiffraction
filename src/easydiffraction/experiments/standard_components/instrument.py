@@ -3,8 +3,11 @@ from easydiffraction.core.parameter import Parameter
 
 DEFAULT_BEAM_MODE = "constant wavelength"
 
+
 class InstrumentBase(StandardComponent):
-    cif_category_name = "_instr"
+    @property
+    def cif_category_name(self):
+        return "_instr"
 
 
 class ConstantWavelengthInstrument(InstrumentBase):
