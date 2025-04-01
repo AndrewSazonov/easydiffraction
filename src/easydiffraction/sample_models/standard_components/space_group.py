@@ -1,8 +1,8 @@
-from easydiffraction.core.component_base import StandardComponentBase
+from easydiffraction.core.component_base import StandardComponent
 from easydiffraction.core.parameter import Descriptor
 
 
-class SpaceGroup(StandardComponentBase):
+class SpaceGroup(StandardComponent):
     """
     Represents the space group of a sample model.
     """

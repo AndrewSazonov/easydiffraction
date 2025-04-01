@@ -5,16 +5,19 @@ from abc import ABC, abstractmethod
 from numpy.polynomial.chebyshev import chebval
 from scipy.interpolate import interp1d
 
-from easydiffraction.utils.formatting import paragraph, warning
-from easydiffraction.core.parameter import Parameter, Descriptor
+from easydiffraction.utils.formatting import (paragraph,
+                                              warning)
+from easydiffraction.core.parameter import (Parameter,
+                                            Descriptor)
+from easydiffraction.core.component_base import (IterableComponent,
+                                                 IterableComponentRow)
 
 DEFAULT_BACKGROUND_TYPE = "line-segment"
 
 
-class Point:
-    cif_category_name = "_pd_background"
-
-    def __init__(self, x, y):
+class Point(IterableComponentRow):
+    def __init__(self, x: float, y: float):
+        super().__init__()
         self.x = Descriptor(
             value=x,
             cif_name='line_segment_X',
@@ -26,13 +29,10 @@ class Point:
             description="Intensity used to create many straight-line segments representing the background in a calculated diffractogram"
         )
 
-    def as_cif(self) -> str:
-        return (f"{self.x.value} {self.y.value}")
 
-class PolynomialTerm:
-    cif_category_name = "_pd_background"
-
+class PolynomialTerm(IterableComponentRow):
     def __init__(self, order, coef):
+        super().__init__()
         self.order = Descriptor(
             value=order,
             cif_name='Chebyshev_order',
@@ -45,14 +45,8 @@ class PolynomialTerm:
         )
 
 
-    def as_cif(self) -> str:
-        return (f"{self.order.value} {self.coef.value}")
-
-
-class BackgroundBase(ABC):
-    """Base background class."""
-    def __init__(self):
-        self._data = []
+class BackgroundBase(IterableComponent):
+    cif_category_name = "_pd_background"
 
     @abstractmethod
     def add(self, *args):
@@ -76,16 +70,16 @@ class LineSegmentBackground(BackgroundBase):
     def add(self, x, y):
         """Add a background point."""
         point = Point(x=x, y=y)
-        self._data.append(point)
+        self._rows.append(point)
 
     def calculate(self, x_data):
         """Interpolate background points over x_data."""
-        if not self._data:
+        if not self._rows:
             print(warning('No background points found. Setting background to zero.'))
             return np.zeros_like(x_data)
 
-        background_x = np.array([point.x.value for point in self._data])
-        background_y = np.array([point.y.value for point in self._data])
+        background_x = np.array([point.x.value for point in self._rows])
+        background_y = np.array([point.y.value for point in self._rows])
         interp_func = interp1d(
             background_x, background_y,
             kind='linear',
@@ -95,22 +89,11 @@ class LineSegmentBackground(BackgroundBase):
         y_data = interp_func(x_data)
         return y_data
 
-    def as_cif(self) -> str:
-        # TODO: this header should be generated automatically
-        lines = [
-            "loop_",
-            "_pd_background.line_segment_X",
-            "_pd_background.line_segment_intensity"
-        ]
-        for item in self._data:
-            lines.append(item.as_cif())
-        return "\n".join(lines)
-
     def show(self):
         header = ["X", "Intensity"]
         table_data = []
 
-        for point in self._data:
+        for point in self._rows:
             x = point.x.value
             y = point.y.value
             table_data.append([x, y])
@@ -135,35 +118,24 @@ class ChebyshevPolynomialBackground(BackgroundBase):
     def add(self, order, coef):
         """Add a polynomial term as (order, coefficient)."""
         term = PolynomialTerm(order=order, coef=coef)
-        self._data.append(term)
+        self._rows.append(term)
 
     def calculate(self, x_data):
         """Evaluate polynomial background over x_data."""
-        if not self._data:
+        if not self._rows:
             print(warning('No background points found. Setting background to zero.'))
             return np.zeros_like(x_data)
 
         u = (x_data - x_data.min()) / (x_data.max() - x_data.min()) * 2 - 1  # scale to [-1, 1]
-        coefs = [term.coef.value for term in self._data]
+        coefs = [term.coef.value for term in self._rows]
         y_data = chebval(u, coefs)
         return y_data
-
-    def as_cif(self) -> str:
-        # TODO: this header should be generated automatically
-        lines = [
-            "loop_",
-            "_pd_background.Chebyshev_order",
-            "_pd_background.Chebyshev_coef"
-        ]
-        for item in self._data:
-            lines.append(item.as_cif())
-        return "\n".join(lines)
 
     def show(self):
         header = ["Order", "Coefficient"]
         table_data = []
 
-        for term in self._data:
+        for term in self._rows:
             order = term.order.value
             coef = term.coef.value
             table_data.append([order, coef])

@@ -6,10 +6,10 @@ from typing import Union
 
 from easydiffraction.experiments.standard_components.experiment_type import ExperimentType
 from easydiffraction.experiments.standard_components.instrument import InstrumentFactory
-from easydiffraction.experiments.standard_components.peak import PeakFactory
+from easydiffraction.experiments.standard_components.peak import PeakFactory, DEFAULT_PROFILE_TYPE
 
 from easydiffraction.experiments.iterable_components.linked_phases import LinkedPhases
-from easydiffraction.experiments.iterable_components.background import BackgroundFactory
+from easydiffraction.experiments.iterable_components.background import BackgroundFactory, DEFAULT_BACKGROUND_TYPE
 from easydiffraction.experiments.iterable_components.datastore import DatastoreFactory
 
 from easydiffraction.utils.formatting import paragraph, warning
@@ -60,7 +60,7 @@ class BaseExperiment(ABC):
             lines.append(self.linked_crystal.as_cif())
 
         # Background points
-        if hasattr(self, "background"):
+        if hasattr(self, "background") and len(self.background):
             lines.append("")
             lines.append(self.background.as_cif())
 
@@ -122,8 +122,8 @@ class PowderExperiment(BaseExperiment):
                  type: ExperimentType):
         super().__init__(id=id,
                          type=type)
-        self._peak_profile_type = ""
-        self._background_type = ""
+        self._peak_profile_type = DEFAULT_PROFILE_TYPE
+        self._background_type = DEFAULT_BACKGROUND_TYPE
         self.peak = PeakFactory.create(beam_mode=self.type.beam_mode.value)
         self.linked_phases = LinkedPhases()
         self.background = BackgroundFactory.create()
@@ -213,7 +213,7 @@ class PowderExperiment(BaseExperiment):
         ))
 
     def show_current_peak_profile_type(self):
-        print(paragraph("Current background type"))
+        print(paragraph("Current peak profile type"))
         print(self.peak_profile_type)
 
     @property

@@ -4,16 +4,23 @@ from easydiffraction.utils.formatting import error
 from easydiffraction.core.parameter import Parameter, Descriptor
 
 
-class StandardComponentBase(ABC):
+class ComponentBase(ABC):
     """
-    Base class for experiment and sample model components.
+    Base class for all components in the EasyDiffraction framework.
     Provides common functionality for CIF export and parameter handling.
     """
-    cif_category_name = None  # Should be set in the derived class (e.g., "_instr_setup")
+    cif_category_name = None  # Should be set in the derived class
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._locked = False  # If adding new attributes is locked
+
+class StandardComponent(ComponentBase):
+    """
+    Base class for experiment and sample model components of the standard type.
+    Provides common functionality for CIF export and parameter handling.
+    """
+    cif_category_name = None  # Should be set in the derived class (e.g., "_instr_setup")
 
     def __getattr__(self, name):
         """
@@ -110,6 +117,76 @@ class StandardComponentBase(ABC):
             val_part = val_fmt.ljust(value_column_width)
             comment = f"# units: {unit}" if unit else ""
             line = f"{tag_part}{val_part}{comment}"
+            lines.append(line)
+
+        return "\n".join(lines)
+
+class IterableComponentRow(ABC):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._ordered_attrs = []
+
+    def __setattr__(self, key, value):
+        if isinstance(value, (Parameter, Descriptor)):
+            if not hasattr(self, "_ordered_attrs"):
+                super().__setattr__("_ordered_attrs", [])
+            self._ordered_attrs.append(key)
+        super().__setattr__(key, value)
+
+
+class IterableComponent(ComponentBase):
+    """
+    Base class for experiment and sample model components of the iterable type.
+    Provides common functionality for CIF export and parameter handling.
+    """
+    cif_category_name = None  # Should be set in the derived class (e.g., "_instr_setup")
+
+    def __init__(self):
+        super().__init__()
+        self._rows = []
+
+    def __iter__(self):
+        """
+        Iterate through the rows of the iterable component.
+        """
+        return iter(self._rows)
+
+    def __len__(self) -> int:
+        """
+        Return the number of rows in the iterable component.
+        """
+        return len(self._rows)
+
+    def __getitem__(self, key: str):
+        """
+        Get a specific row by its ID.
+        """
+        for row in self._rows:
+            if row.id.value == key:
+                return row
+        raise KeyError(f"No row item with id '{key}' found.")
+
+    @staticmethod
+    def _get_params(row: IterableComponentRow):
+        attrs = [getattr(row, name) for name in row._ordered_attrs]
+        return attrs
+
+    def as_cif(self) -> str:
+        # Start with the loop line
+        lines = ["loop_"]
+
+        # Create the header lines
+        first_row = self._rows[0]
+        params = IterableComponent._get_params(first_row)
+        for param in params:
+            lines.append(f"{self.cif_category_name}.{param.cif_name}")
+
+        # Add the data lines
+        for item in self._rows:
+            line = ""
+            params = IterableComponent._get_params(item)
+            for param in params:
+                line += f"  {param.value}"
             lines.append(line)
 
         return "\n".join(lines)

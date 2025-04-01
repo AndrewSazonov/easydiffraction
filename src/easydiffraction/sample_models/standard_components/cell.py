@@ -1,7 +1,7 @@
-from easydiffraction.core.component_base import StandardComponentBase
+from easydiffraction.core.component_base import StandardComponent
 from easydiffraction.core.parameter import Parameter
 
-class Cell(StandardComponentBase):
+class Cell(StandardComponent):
     """
     Represents the unit cell parameters of a sample model.
     """

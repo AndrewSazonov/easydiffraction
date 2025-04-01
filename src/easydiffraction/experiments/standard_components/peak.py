@@ -1,5 +1,5 @@
 from easydiffraction.core.parameter import Descriptor, Parameter
-from easydiffraction.core.component_base import StandardComponentBase
+from easydiffraction.core.component_base import StandardComponent
 
 DEFAULT_BEAM_MODE = "constant wavelength"
 DEFAULT_PROFILE_TYPE = "pseudo-voigt"
@@ -152,7 +152,7 @@ class IkedaCarpenterAsymmetryMixin:
         )
 
 # --- Base peak class ---
-class PeakBase(StandardComponentBase):
+class PeakBase(StandardComponent):
     cif_category_name = "_peak"
 
     def __init__(self):
