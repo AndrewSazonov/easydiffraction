@@ -37,11 +37,9 @@ class CrysfmlCalculator(CalculatorBase):
         return y
 
     def _adjust_pattern_length(self, pattern, target_length):
+        # TODO: Check the origin of this discrepancy coming from PyCrysFML
         if len(pattern) > target_length:
             return pattern[:target_length]
-        #elif len(pattern) < target_length:
-        #    padding = target_length - len(pattern)
-        #    return np.pad(pattern, (0, padding), 'constant')
         return pattern
 
     def _crysfml_dict(self, sample_model, experiment):

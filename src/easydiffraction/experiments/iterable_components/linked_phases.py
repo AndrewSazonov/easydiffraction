@@ -5,15 +5,8 @@ from easydiffraction.core.parameter import Parameter, Descriptor
 class LinkedPhase:
     cif_category_name = "_pd_phase_block"
 
-    def __init__(
-        self,
-        id: str,
-        scale: float
-    ):
-        # Descriptors (static values, non-refinable)
+    def __init__(self, id: str, scale: float):
         self.id = Descriptor(id, cif_name="id")
-
-        # Parameters (refinable)
         self.scale = Parameter(scale, cif_name="scale")
 
     def as_cif_row(self) -> str:
@@ -27,11 +20,7 @@ class LinkedPhases:
     def __init__(self):
         self.phases: List[LinkedPhase] = []
 
-    def add(
-        self,
-        id: str,
-        scale: float
-    ):
+    def add(self, id: str, scale: float):
         phase = LinkedPhase(id, scale)
         self.phases.append(phase)
 
