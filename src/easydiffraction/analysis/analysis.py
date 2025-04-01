@@ -122,13 +122,11 @@ class Analysis:
 
     def show_available_refinement_strategies(self):
         strategies = [
-            {"Strategy": "single", "Description": "Refine each experiment separately"},
+            {"Strategy": "single", "Description": "Refine each experiment separately one after another"},
             {"Strategy": "combined", "Description": "Perform joint refinement of all experiments"},
-            {"Strategy": "sequential*", "Description": "Refine experiments one after another"}
         ]
         print(paragraph("Available refinement strategies"))
         print(tabulate(strategies, headers="keys", tablefmt="fancy_outline", showindex=False))
-        print("* Strategies marked with an asterisk are not implemented yet.")
 
     def show_current_refinement_strategy(self):
         print(paragraph("Current refinement strategy"))
@@ -142,12 +140,9 @@ class Analysis:
         return calculated_pattern
 
     def show_calc_chart(self, expt_id, x_min=None, x_max=None):
+        self.calculate_pattern(expt_id)
+
         experiment = self.project.experiments[expt_id]
-
-        if experiment.datastore.pattern.calc is None:
-            print(info(f"No calculated pattern found for 🔬 '{expt_id}'. Calculating."))
-            self.calculate_pattern(expt_id)
-
         pattern = experiment.datastore.pattern
 
         plotter = ChartPlotter()
@@ -211,7 +206,7 @@ class Analysis:
             return
 
         # Run the fitting process
-        print(paragraph(f"Fitting using refinement strategy '{self.refinement_strategy}'"))
+        print(paragraph(f"Fitting using refinement strategy '{self.refinement_strategy}'..."))
         experiment_ids = list(experiments._items.keys())
 
         if self.refinement_strategy == 'combined':
