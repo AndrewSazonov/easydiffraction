@@ -183,6 +183,7 @@ class ChebyshevPolynomialBackground(BackgroundBase):
             showindex=False
         ))
 
+
 class BackgroundFactory:
     _supported = {
         "line-segment": LineSegmentBackground,

@@ -1,22 +1,15 @@
 from easydiffraction.core.component_base import StandardComponentBase
 from easydiffraction.core.parameter import Parameter
 
+DEFAULT_BEAM_MODE = "constant wavelength"
 
 class InstrumentBase(StandardComponentBase):
     cif_category_name = "_instr"
 
-    def __init__(self, type_name, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._type = type_name
-
-    @property
-    def type(self):
-        return self._type
-
 
 class ConstantWavelengthInstrument(InstrumentBase):
     def __init__(self):
-        super().__init__("constant wavelength")
+        super().__init__()
 
         self.setup_wavelength = Parameter(
             value=1.5406,
@@ -36,7 +29,7 @@ class ConstantWavelengthInstrument(InstrumentBase):
 
 class TimeOfFlightInstrument(InstrumentBase):
     def __init__(self):
-        super().__init__("time-of-flight")
+        super().__init__()
 
         self.setup_twotheta_bank = Parameter(
             value=-0.01,
@@ -79,7 +72,7 @@ class InstrumentFactory:
     }
 
     @classmethod
-    def create(cls, beam_mode='constant wavelength'):
+    def create(cls, beam_mode=DEFAULT_BEAM_MODE):
         if beam_mode not in cls._supported:
             supported = list(cls._supported.keys())
 

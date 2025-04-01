@@ -35,6 +35,7 @@ class StandardComponentBase(ABC):
                 #raise AttributeError(f"Cannot add new attribute '{name}' to locked class '{self.__class__.__name__}'")
                 print(error(f"Cannot add new parameter '{name}'"))
                 return
+
         attr = self.__dict__.get(name, None)
         if isinstance(attr, (Descriptor, Parameter)):
             attr.value = value
