@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from easydiffraction.utils.formatting import error
 from easydiffraction.core.parameter import Parameter, Descriptor
 
 
@@ -8,24 +9,37 @@ class StandardComponentBase(ABC):
     Base class for experiment and sample model components.
     Provides common functionality for CIF export and parameter handling.
     """
-
     cif_category_name = None  # Should be set in the derived class (e.g., "_instr_setup")
 
-    def __setattr__(self, name, value):
-        attr = self.__dict__.get(name)
-        # If the attribute exists and is a Parameter instance, set its value
-        if isinstance(attr, Parameter):
-            attr.value = value
-        else:
-            # Otherwise, set the attribute normally
-            super().__setattr__(name, value)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._locked = False  # If adding new attributes is locked
 
     def __getattr__(self, name):
-        # If the attribute is a Parameter, return its value by default
-        attr = self.__dict__.get(name)
+        """
+        If the attribute is a Parameter or Descriptor, return its value by default
+        """
+        attr = self.__dict__.get(name, None)
         if isinstance(attr, (Parameter, Descriptor)):
             return attr.value
         raise AttributeError(f"{name} not found")
+
+    def __setattr__(self, name, value):
+        """
+        If an object is locked for adding new attributes, raise an error.
+        If the attribute 'name' does not exist, add it.
+        If the attribute 'name' exists and is a Parameter or Descriptor, set its value.
+        """
+        if hasattr(self, "_locked") and self._locked:
+            if not hasattr(self, name):
+                #raise AttributeError(f"Cannot add new attribute '{name}' to locked class '{self.__class__.__name__}'")
+                print(error(f"Cannot add new parameter '{name}'"))
+                return
+        attr = self.__dict__.get(name, None)
+        if isinstance(attr, (Descriptor, Parameter)):
+            attr.value = value
+        else:
+            super().__setattr__(name, value)
 
     def as_cif(self):
         """
@@ -38,7 +52,7 @@ class StandardComponentBase(ABC):
 
         # Iterate over all attributes of the instance
         for attr_name in dir(self):
-            
+
             # Skip internal attributes and methods
             if attr_name.startswith('_'):
                 continue
