@@ -10,7 +10,7 @@ class Broadening:
     def __init__(self):
         # Constant wavelength specific parameters
         self.broad_gauss_u: Parameter = Parameter(
-            value=0.0333,
+            value=0.01,
             cif_name="broad_gauss_u",
             units="deg²",
             description="Gaussian broadening coefficient (dependent on sample size and instrument resolution)"
@@ -23,7 +23,7 @@ class Broadening:
         )
         self.broad_gauss_w: Parameter = Parameter(
             value=0.02,
-            cif_name="gauss_w",  # TODO: fix name
+            cif_name="broad_gauss_w",
             units="deg²",
             description="Gaussian broadening coefficient (instrumental broadening contribution)"
         )
@@ -40,6 +40,7 @@ class Broadening:
             description="Lorentzian broadening coefficient (dependent on microstructural defects and strain)"
         )
         self.broad_mix_eta: Descriptor = Descriptor(
+            # TODO: This should be a Parameter, but it cannot be refined
             value=0.0,
             cif_name="broad_mix_eta",
             description="Mixing parameter. Defines the ratio of Gaussian to Lorentzian broadening (not refined directly, calculated from X and Y parameters)",

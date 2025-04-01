@@ -43,47 +43,73 @@ class StandardComponentBase(ABC):
             super().__setattr__(name, value)
 
     def as_cif(self):
-        """
-        Export parameters to CIF format with uncertainties and units.
-        """
         if not self.cif_category_name:
             raise ValueError("cif_category_name must be defined in the derived class.")
 
-        lines = []
+        records = []
 
-        # Iterate over all attributes of the instance
         for attr_name in dir(self):
-
-            # Skip internal attributes and methods
             if attr_name.startswith('_'):
                 continue
 
-            # Get the attribute object
             attr_obj = getattr(self, attr_name)
-
-            # Skip methods and non-Descriptor/non-Parameter attributes
             if not isinstance(attr_obj, (Descriptor, Parameter)):
                 continue
 
-            # Get full parameter name
-            full_cif_name = f"{self.cif_category_name}.{attr_obj.cif_name}"
+            tag = f"{self.cif_category_name}.{attr_obj.cif_name}"
+            value = attr_obj.value
+            unit = getattr(attr_obj, "units", None)
 
-            # Get formatted value
-            if isinstance(attr_obj.value, str) and " " in attr_obj.value:
-                # If the value is a string with spaces, wrap it in double quotes
-                formatted_value = f'"{attr_obj.value}"'
-            elif isinstance(attr_obj.value, float):
-                formatted_value = f"{attr_obj.value:>10.5f}"
+            if isinstance(value, float):
+                float_str = f"{value:.6f}".rstrip('0')
+                if float_str.endswith('.'):
+                    float_str += '0'
+                val_str = float_str
+            elif isinstance(value, str):
+                val_str = f'"{value}"' if ' ' in value else value
             else:
-                formatted_value = attr_obj.value
+                val_str = str(value)
 
-            # Construct the line
-            line = f"{full_cif_name} {formatted_value}"
+            records.append((tag, val_str, unit))
 
-            # Append units as a comment (if any)
-            if hasattr(attr_obj, "units") and attr_obj.units:
-                line += f"  # units: {attr_obj.units}"
+        max_tag_len = max(len(tag) for tag, _, _ in records)
+        float_parts = []
+        string_lengths = []
+        for _, val, _ in records:
+            if '.' in val and not val.startswith('"'):
+                sign = '-' if val.startswith('-') else ''
+                int_part, _, dec_part = val.lstrip('-').partition('.')
+                float_parts.append((sign, int_part, dec_part))
+            elif val.isalpha() or val.startswith('"'):
+                string_lengths.append(len(val))
 
+        max_int_part = max((len(sign + int_part) for sign, int_part, _ in float_parts), default=0)
+        max_dec_part = max((len(dec_part) for _, _, dec_part in float_parts), default=0)
+        max_float_length = max((len(f"{sign}{int_part}.{dec_part}") for sign, int_part, dec_part in float_parts), default=0)
+        max_string_length = max(string_lengths, default=0)
+        value_column_width = max(max_float_length, max_string_length) + 2
+
+        formatted_records = []
+        for tag, val, unit in records:
+            if '.' in val and not val.startswith('"'):  # float
+                sign = '-' if val.startswith('-') else ''
+                int_part, _, dec_part = val.lstrip('-').partition('.')
+                int_full = sign + int_part.rjust(max_int_part - len(sign))
+                dec_full = dec_part.ljust(max_dec_part)
+                formatted = f"{int_full}.{dec_full}".ljust(value_column_width)
+            elif val.replace('-', '').isdigit():  # int
+                formatted = val.rjust(max_int_part).ljust(value_column_width)
+            else:  # string
+                formatted = val.ljust(value_column_width)
+
+            formatted_records.append((tag, formatted, unit))
+
+        lines = []
+        for tag, val_fmt, unit in formatted_records:
+            tag_part = tag.ljust(max_tag_len + 2)
+            val_part = val_fmt.ljust(value_column_width)
+            comment = f"# units: {unit}" if unit else ""
+            line = f"{tag_part}{val_part}{comment}"
             lines.append(line)
 
         return "\n".join(lines)

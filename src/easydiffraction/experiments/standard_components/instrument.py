@@ -8,17 +8,19 @@ class InstrumentBase(StandardComponentBase):
 
 
 class ConstantWavelengthInstrument(InstrumentBase):
-    def __init__(self):
+    def __init__(self,
+                 setup_wavelength=1.5406,
+                 calib_twotheta_offset=0):
         super().__init__()
 
         self.setup_wavelength = Parameter(
-            value=1.5406,
+            value=setup_wavelength,
             cif_name="wavelength",
             units="Å",
             description="Incident neutron or X-ray wavelength"
         )
         self.calib_twotheta_offset = Parameter(
-            value=0,
+            value=calib_twotheta_offset,
             cif_name="2theta_offset",
             units="deg",
             description="Instrument misalignment offset"
@@ -28,35 +30,40 @@ class ConstantWavelengthInstrument(InstrumentBase):
 
 
 class TimeOfFlightInstrument(InstrumentBase):
-    def __init__(self):
+    def __init__(self,
+                 setup_twotheta_bank=150.0,
+                 calib_d_to_tof_offset=0.0,
+                 calib_d_to_tof_linear=10000.0,
+                 calib_d_to_tof_quad=-1.0,
+                 calib_d_to_tof_recip=0.0):
         super().__init__()
 
         self.setup_twotheta_bank = Parameter(
-            value=-0.01,
+            value=setup_twotheta_bank,
             cif_name="2theta_bank",
             units="deg",
             description="Detector bank position"
         )
         self.calib_d_to_tof_offset = Parameter(
-            value=0.1,
+            value=calib_d_to_tof_offset,
             cif_name="d_to_tof_offset",
             units="µs",
             description="TOF offset"
         )
         self.calib_d_to_tof_linear = Parameter(
-            value=0.2,
+            value=calib_d_to_tof_linear,
             cif_name="d_to_tof_linear",
             units="µs/Å",
             description="TOF linear conversion"
         )
         self.calib_d_to_tof_quad = Parameter(
-            value=0.3,
+            value=calib_d_to_tof_quad,
             cif_name="d_to_tof_quad",
             units="µs/Å²",
             description="TOF quadratic correction"
         )
         self.calib_d_to_tof_recip = Parameter(
-            value=0.4,
+            value=calib_d_to_tof_recip,
             cif_name="d_to_tof_recip",
             units="µs·Å",
             description="TOF reciprocal velocity correction"
