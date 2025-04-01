@@ -32,7 +32,7 @@ and X-ray diffraction data, both measured using constant wavelength instruments.
 The objective is to accurately refine the crystal structure of PbSO4."""
 
 # Save the initial project specifying the directory path
-project.save_as("examples/pbso4_joint")
+project.save_as("examples/projects/pbso4_joint")
 
 # Show project metadata
 project.info.show_as_cif()
