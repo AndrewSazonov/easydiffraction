@@ -1,6 +1,6 @@
-import os.path
-
 import numpy as np
+import tabulate
+
 from abc import ABC, abstractmethod
 from typing import Union
 
@@ -60,18 +60,9 @@ class BaseExperiment(ABC):
             lines.append(self.linked_crystal.as_cif())
 
         # Background points
-        # TODO: This functionality should be moved to background.py
-        if hasattr(self, "background") and hasattr(self.background, "points") and self.background.points:
+        if hasattr(self, "background"):
             lines.append("")
-            lines.append("loop_")
-            category = '_pd_background'  # TODO: Add category to background component
-            attributes = ('line_segment_X', 'line_segment_intensity')
-            for attribute in attributes:
-                lines.append(f"{category}.{attribute}")
-            for point in self.background.points:
-                x = point[0]
-                y = point[1]
-                lines.append(f"{x} {y}")
+            lines.append(self.background.as_cif())
 
         # Measured data
         # TODO: This functionality should be moved to datastore.py
@@ -133,7 +124,7 @@ class PowderExperiment(BaseExperiment):
                          type=type)
         self.peak = PeakFactory.create(beam_mode=self.type.beam_mode.value)
         self.linked_phases = LinkedPhases()
-        self.background = BackgroundFactory.create_background("point")
+        self.background = BackgroundFactory.create()
 
     def _load_ascii_data_to_experiment(self, data_path):
         """
@@ -183,6 +174,39 @@ class PowderExperiment(BaseExperiment):
             labels=['meas']
         )
 
+    @property
+    def background_type(self):
+        return self.background.type
+
+    @background_type.setter
+    def background_type(self, name):
+        if name not in BackgroundFactory._supported:
+            raise ValueError(f"Background type '{name}' is not supported. Supported types: {list(BackgroundFactory._supported.keys())}")
+        self.background = BackgroundFactory.create(name)
+        print(paragraph(f"Background type for experiment '{self.id}' changed to"))
+        print(name)
+
+    def show_supported_background_types(self):
+        header = ["Background type", "Description"]
+        table_data = []
+
+        for name, config in BackgroundFactory._supported.items():
+            description = getattr(config, '_description', 'No description provided.')
+            table_data.append([name, description])
+
+        print(paragraph("Supported background types"))
+        print(tabulate.tabulate(
+            table_data,
+            headers=header,
+            tablefmt="fancy_outline",
+            numalign="left",
+            stralign="left",
+            showindex=False
+        ))
+
+    def show_current_background_type(self):
+        print(paragraph("Current background type"))
+        print(self.background.type)
 
 class SingleCrystalExperiment(BaseExperiment):
     """Powder experiment class with specific attributes."""

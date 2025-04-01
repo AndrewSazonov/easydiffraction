@@ -147,7 +147,7 @@ project.experiments["xrd"].peak.broad_lorentz_y = 0.057691
 
 # Link sample model to experiments
 project.experiments['npd'].linked_phases.add(id='pbso4', scale=1.0)
-project.experiments['xrd'].linked_phases.add(id='pbso4', scale=0.005)
+project.experiments['xrd'].linked_phases.add(id='pbso4', scale=0.002)
 
 # Show experiments as CIF
 project.experiments["npd"].show_as_cif()
@@ -178,6 +178,10 @@ project.analysis.show_meas_vs_calc_chart(expt_id="xrd", x_min=26, x_max=28)
 
 # The following background points represent the baseline noise in the diffraction data.
 print(ed.section('Add background'))
+project.experiments["npd"].show_supported_background_types()
+project.experiments["npd"].show_current_background_type()
+
+project.experiments["npd"].background_type = "line-segment"
 project.experiments["npd"].background.add(x=11.0, y=206.1624)
 project.experiments["npd"].background.add(x=15.0, y=194.75)
 project.experiments["npd"].background.add(x=20.0, y=194.505)
@@ -188,14 +192,13 @@ project.experiments["npd"].background.add(x=120.0, y=244.4525)
 project.experiments["npd"].background.add(x=153.0, y=226.0595)
 project.experiments["npd"].background.show()
 
-project.experiments["xrd"].background.add(x=11.0, y=141.8516)
-project.experiments["xrd"].background.add(x=13.0, y=102.8838)
-project.experiments["xrd"].background.add(x=16.0, y=78.0551)
-project.experiments["xrd"].background.add(x=20.0, y=124.0121)
-project.experiments["xrd"].background.add(x=30.0, y=123.7123)
-project.experiments["xrd"].background.add(x=50.0, y=120.8266)
-project.experiments["xrd"].background.add(x=90.0, y=113.7473)
-project.experiments["xrd"].background.add(x=110.0, y=132.4643)
+project.experiments["xrd"].background_type = "chebyshev polynomial"
+project.experiments["xrd"].background.add(order=0, coef=119.195)
+project.experiments["xrd"].background.add(order=1, coef=6.221)
+project.experiments["xrd"].background.add(order=2, coef=-45.725)
+project.experiments["xrd"].background.add(order=3, coef=8.119)
+project.experiments["xrd"].background.add(order=4, coef=54.552)
+project.experiments["xrd"].background.add(order=5, coef=-20.661)
 project.experiments["xrd"].background.show()
 
 print(ed.section('Show experiments as CIF. Now the background points are included'))

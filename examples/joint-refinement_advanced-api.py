@@ -37,6 +37,7 @@ expt1.peak.broad_gauss_w = 0.386
 expt1.peak.broad_lorentz_x = 0
 expt1.peak.broad_lorentz_y = 0.088
 expt1.linked_phases.add("pbso4", scale=1.0)
+expt1.background_type = "line-segment"
 for x, y in [
     (11.0, 206.1624),
     (15.0, 194.75),
@@ -59,15 +60,14 @@ expt2.peak.broad_gauss_w = 0.021272
 expt2.peak.broad_lorentz_x = 0
 expt2.peak.broad_lorentz_y = 0.057691
 expt2.linked_phases.add("pbso4", scale=0.005)
+expt2.background_type = "chebyshev polynomial"
 for x, y in [
-    (11.0, 141.8516),
-    (13.0, 102.8838),
-    (16.0, 78.0551),
-    (20.0, 124.0121),
-    (30.0, 123.7123),
-    (50.0, 120.8266),
-    (90.0, 113.7473),
-    (110.0, 132.4643),
+    (0, 119.195),
+    (1, 6.221),
+    (2, -45.725),
+    (3, 8.119),
+    (4, 54.552),
+    (5, -20.661),
 ]:
     expt2.background.add(x, y)
 
