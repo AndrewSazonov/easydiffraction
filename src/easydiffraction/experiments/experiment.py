@@ -4,7 +4,7 @@ import tabulate
 from abc import ABC, abstractmethod
 from typing import Union
 
-from easydiffraction.experiments.standard_components.type import ExperimentType
+from easydiffraction.experiments.standard_components.experiment_type import ExperimentType
 from easydiffraction.experiments.standard_components.instrument import InstrumentFactory
 from easydiffraction.experiments.standard_components.peak import PeakFactory
 

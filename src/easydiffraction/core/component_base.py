@@ -58,22 +58,29 @@ class StandardComponentBase(ABC):
             if attr_name.startswith('_'):
                 continue
 
+            # Get the attribute object
             attr_obj = getattr(self, attr_name)
 
             # Skip methods and non-Descriptor/non-Parameter attributes
             if not isinstance(attr_obj, (Descriptor, Parameter)):
                 continue
 
+            # Get full parameter name
             full_cif_name = f"{self.cif_category_name}.{attr_obj.cif_name}"
 
-            formatted_value = attr_obj.value
-            if isinstance(formatted_value, str) and " " in formatted_value:
+            # Get formatted value
+            if isinstance(attr_obj.value, str) and " " in attr_obj.value:
                 # If the value is a string with spaces, wrap it in double quotes
-                formatted_value = f'"{formatted_value}"'
+                formatted_value = f'"{attr_obj.value}"'
+            elif isinstance(attr_obj.value, float):
+                formatted_value = f"{attr_obj.value:>10.5f}"
+            else:
+                formatted_value = attr_obj.value
 
+            # Construct the line
             line = f"{full_cif_name} {formatted_value}"
 
-            # Append units as comment (if any)
+            # Append units as a comment (if any)
             if hasattr(attr_obj, "units") and attr_obj.units:
                 line += f"  # units: {attr_obj.units}"
 

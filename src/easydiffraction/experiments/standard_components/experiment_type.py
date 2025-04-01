@@ -9,6 +9,8 @@ class ExperimentType(StandardComponentBase):
                  sample_form: str = "powder",
                  beam_mode: str = "constant wavelength",
                  radiation_probe: str = "neutron"):
+        super().__init__()
+
         self.sample_form: Descriptor = Descriptor(
             value=sample_form,
             cif_name="sample_form",
