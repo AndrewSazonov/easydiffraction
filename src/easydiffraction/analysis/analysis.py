@@ -224,3 +224,24 @@ class Analysis:
 
         # After fitting, get the results
         self.fit_results = self.fitter.results
+
+    def as_cif(self):
+        lines = []
+        lines.append(f"_analysis.calculator_engine  {self.current_calculator}")
+        lines.append(f"_analysis.fitting_engine  {self.current_minimizer}")
+        lines.append(f"_analysis.refinement_strategy  {self.refinement_strategy}")
+
+        return "\n".join(lines)
+
+    def show_as_cif(self):
+        cif_text = self.as_cif()
+        lines = cif_text.splitlines()
+        max_width = max(len(line) for line in lines)
+        padded_lines = [f"│ {line.ljust(max_width)} │" for line in lines]
+        top = f"╒{'═' * (max_width + 2)}╕"
+        bottom = f"╘{'═' * (max_width + 2)}╛"
+
+        print(paragraph(f"Analysis 🧮 info as cif"))
+        print(top)
+        print("\n".join(padded_lines))
+        print(bottom)

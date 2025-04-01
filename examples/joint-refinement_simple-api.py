@@ -283,6 +283,9 @@ print(ed.section('Show data charts after 4th fitting'))
 project.analysis.show_meas_vs_calc_chart(expt_id="npd", x_min=62, x_max=66, show_residual=True)
 project.analysis.show_meas_vs_calc_chart(expt_id="xrd", x_min=26, x_max=28, show_residual=True)
 
+# Show analysis as CIF
+project.analysis.show_as_cif()
+
 # Save the project state after analysis
 project.save()
 
