@@ -32,7 +32,7 @@ class Summary:
         - Experiment configurations and results
         - Analysis and refinement results
         """
-        ##############################
+        # ------------------------------------------
         print(section("Project info"))
 
         print(paragraph("Title"))
@@ -41,7 +41,7 @@ class Summary:
         print(paragraph("Description"))
         print('\n'.join(wrap(self.project.info.description, width=60)))
 
-        #######################################
+        # ------------------------------------------
         print(section("Crystallographic data"))
         for model in self.project.sample_models._models.values():
             print(paragraph("Phase datablock"))
@@ -70,7 +70,7 @@ class Summary:
             headers = ["Label", "Type", "fract_x", "fract_y", "fract_z", "Occupancy", "B_iso"]
             print(tabulate(atom_table, headers=headers, tablefmt="fancy_outline"))
 
-        #############################
+        # ------------------------------------------
         print(section("Experiments"))
         for expt in self.project.experiments._experiments.values():
             print(paragraph("Experiment datablock"))
@@ -101,7 +101,7 @@ class Summary:
                 ["Y", expt.peak.broad_lorentz_y.value]
             ], headers=["Parameter", "Value"], tablefmt="fancy_outline"))
 
-        ############################
+        # ------------------------------------------
         print(section("Refinement"))
 
         print(paragraph("Calculation engine"))
@@ -123,38 +123,5 @@ class Summary:
     def as_cif(self) -> str:
         """
         Export the final refined data and analysis results as CIF format.
-        
-        Includes project info, sample models, experiment data, and refined parameters.
         """
-        cif_data = (
-            self.project.info.as_cif() +
-            self.project.sample_models.as_cif() +
-            self.project.experiments.as_cif() +
-            self.project.analysis.as_cif()
-        )
-        return cif_data
-
-    def as_html(self) -> str:
-        """
-        Export the final report as an HTML document (stub).
-        """
-        html = f"""
-        <html>
-        <head><title>{self.project.info.title} - Report</title></head>
-        <body>
-            <h1>{self.project.info.title}</h1>
-            <h2>Description</h2>
-            <p>{self.project.info.description}</p>
-
-            <h2>Sample Models</h2>
-            <pre>{self.project.sample_models.show_params()}</pre>
-
-            <h2>Experiments</h2>
-            <pre>{self.project.experiments.show_params()}</pre>
-
-            <h2>Analysis Results</h2>
-            <pre>{self.project.analysis.show_fit_results()}</pre>
-        </body>
-        </html>
-        """
-        return html
+        return "To be added..."
