@@ -48,13 +48,3 @@ class Cell(StandardComponent):
             cif_name="angle_gamma",
             units="deg"
         )
-
-    def as_dict(self):
-        return {
-            "length_a": self.length_a.value,
-            "length_b": self.length_b.value,
-            "length_c": self.length_c.value,
-            "angle_alpha": self.angle_alpha.value,
-            "angle_beta": self.angle_beta.value,
-            "angle_gamma": self.angle_gamma.value
-        }

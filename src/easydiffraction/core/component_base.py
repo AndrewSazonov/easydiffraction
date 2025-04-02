@@ -54,6 +54,22 @@ class StandardComponent(ComponentBase):
         else:
             super().__setattr__(name, value)
 
+    def as_dict(self):
+        d = {}
+
+        for attr_name in dir(self):
+            if attr_name.startswith('_'):
+                continue
+
+            attr_obj = getattr(self, attr_name)
+            if not isinstance(attr_obj, (Descriptor, Parameter)):
+                continue
+
+            key = attr_obj.cif_name
+            value = attr_obj.value
+            d[key] = value
+
+        return d
 
     def as_cif(self):
         if not self.cif_category_name:
