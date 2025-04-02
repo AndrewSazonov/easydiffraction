@@ -9,15 +9,15 @@ from easydiffraction.utils.formatting import (paragraph,
                                               warning)
 from easydiffraction.core.parameter import (Parameter,
                                             Descriptor)
-from easydiffraction.core.component_base import (IterableComponent,
-                                                 IterableComponentRow)
-
-DEFAULT_BACKGROUND_TYPE = "line-segment"
+from easydiffraction.core.component import (IterableComponent,
+                                            IterableComponentRow)
+from easydiffraction.core.constants import DEFAULT_BACKGROUND_TYPE
 
 
 class Point(IterableComponentRow):
     def __init__(self, x: float, y: float):
         super().__init__()
+
         self.x = Descriptor(
             value=x,
             cif_name='line_segment_X',
@@ -29,10 +29,13 @@ class Point(IterableComponentRow):
             description="Intensity used to create many straight-line segments representing the background in a calculated diffractogram"
         )
 
+        self._locked = True  # Lock further attribute additions
+
 
 class PolynomialTerm(IterableComponentRow):
     def __init__(self, order, coef):
         super().__init__()
+
         self.order = Descriptor(
             value=order,
             cif_name='Chebyshev_order',
@@ -43,6 +46,8 @@ class PolynomialTerm(IterableComponentRow):
             cif_name='Chebyshev_coef',
             description="The value of a coefficient used in a Chebyshev polynomial equation representing the background in a calculated diffractogram"
         )
+
+        self._locked = True  # Lock further attribute additions
 
 
 class BackgroundBase(IterableComponent):

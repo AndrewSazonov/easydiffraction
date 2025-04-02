@@ -1,8 +1,8 @@
-from easydiffraction.core.parameter import Descriptor, Parameter
-from easydiffraction.core.component_base import StandardComponent
-
-DEFAULT_BEAM_MODE = "constant wavelength"
-DEFAULT_PROFILE_TYPE = "pseudo-voigt"
+from easydiffraction.core.parameter import (Descriptor,
+                                            Parameter)
+from easydiffraction.core.component import StandardComponent
+from easydiffraction.core.constants import (DEFAULT_BEAM_MODE,
+                                            DEFAULT_PEAK_PROFILE_TYPE)
 
 
 # --- Mixins ---
@@ -265,7 +265,7 @@ class PeakFactory:
     @classmethod
     def create(cls,
                beam_mode=DEFAULT_BEAM_MODE,
-               profile_type=DEFAULT_PROFILE_TYPE):
+               profile_type=DEFAULT_PEAK_PROFILE_TYPE):
         if beam_mode not in cls._supported:
             supported_beam_modes = list(cls._supported.keys())
 

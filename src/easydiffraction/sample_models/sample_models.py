@@ -1,7 +1,7 @@
 from easydiffraction.sample_models.standard_components.space_group import SpaceGroup
 from easydiffraction.sample_models.standard_components.cell import Cell
 from easydiffraction.sample_models.iterable_components.atom_sites import AtomSites
-from easydiffraction.core.collection_base import BaseCollection
+from easydiffraction.core.collection import Collection
 from easydiffraction.utils.formatting import paragraph
 
 
@@ -86,13 +86,13 @@ class SampleModel:
         print("\n".join(padded_lines))
         print(bottom)
 
-class SampleModels(BaseCollection):
+class SampleModels(Collection):
     """
     Collection manager for multiple SampleModel instances.
     """
 
     def __init__(self):
-        super().__init__()  # Initialize BaseCollection
+        super().__init__()  # Initialize Collection
         self._models = self._items  # Alias for legacy support
 
     def add(self, model=None, model_id=None, cif_path=None, cif_str=None):

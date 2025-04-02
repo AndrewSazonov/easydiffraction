@@ -1,7 +1,6 @@
-from easydiffraction.core.component_base import StandardComponent
+from easydiffraction.core.component import StandardComponent
 from easydiffraction.core.parameter import Parameter
-
-DEFAULT_BEAM_MODE = "constant wavelength"
+from easydiffraction.core.constants import DEFAULT_BEAM_MODE
 
 
 class InstrumentBase(StandardComponent):
@@ -92,4 +91,5 @@ class InstrumentFactory:
             )
 
         instrument_class = cls._supported[beam_mode]
-        return instrument_class()
+        instance = instrument_class()
+        return instance

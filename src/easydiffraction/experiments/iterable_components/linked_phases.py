@@ -1,7 +1,7 @@
 from easydiffraction.core.parameter import (Parameter,
                                             Descriptor)
-from easydiffraction.core.component_base import (IterableComponent,
-                                                 IterableComponentRow)
+from easydiffraction.core.component import (IterableComponent,
+                                            IterableComponentRow)
 
 
 class LinkedPhase(IterableComponentRow):
@@ -16,6 +16,8 @@ class LinkedPhase(IterableComponentRow):
             value=scale,
             cif_name="scale"
         )
+
+        self._locked = True  # Lock further attribute additions
 
 
 class LinkedPhases(IterableComponent):

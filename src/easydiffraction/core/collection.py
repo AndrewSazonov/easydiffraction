@@ -2,7 +2,7 @@ import pandas as pd
 from tabulate import tabulate
 
 
-class BaseCollection:
+class Collection:
     """
     Base class for collections like SampleModels and Experiments.
     Provides common methods for gathering and displaying parameters.

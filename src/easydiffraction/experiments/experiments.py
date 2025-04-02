@@ -1,14 +1,14 @@
 import os.path
 
 from easydiffraction.utils.formatting import paragraph
-from easydiffraction.core.collection_base import BaseCollection
+from easydiffraction.core.collection import Collection
 from easydiffraction.experiments.experiment import (
     BaseExperiment,
     ExperimentFactory
 )
 
 
-class Experiments(BaseCollection):
+class Experiments(Collection):
     """
     Collection manager for multiple Experiment instances.
     """
@@ -54,7 +54,7 @@ class Experiments(BaseCollection):
         self._experiments[experiment.id] = experiment
 
     def _add_from_cif_path(self, cif_path):
-        print(f"Loading Experiment from CIF path: {cif_path}")
+        print(f"Loading Experiment from CIF path...")
         raise NotImplementedError("CIF loading not implemented.")
 
     def _add_from_cif_string(self, cif_str):

@@ -2,18 +2,23 @@ import numpy as np
 import tabulate
 
 from abc import ABC, abstractmethod
-from typing import Union
 
 from easydiffraction.experiments.standard_components.experiment_type import ExperimentType
 from easydiffraction.experiments.standard_components.instrument import InstrumentFactory
-from easydiffraction.experiments.standard_components.peak import PeakFactory, DEFAULT_PROFILE_TYPE
+from easydiffraction.experiments.standard_components.peak import PeakFactory
 
 from easydiffraction.experiments.iterable_components.linked_phases import LinkedPhases
-from easydiffraction.experiments.iterable_components.background import BackgroundFactory, DEFAULT_BACKGROUND_TYPE
+from easydiffraction.experiments.iterable_components.background import BackgroundFactory
 from easydiffraction.experiments.iterable_components.datastore import DatastoreFactory
 
 from easydiffraction.utils.formatting import paragraph, warning
 from easydiffraction.utils.chart_plotter import ChartPlotter
+
+from easydiffraction.core.constants import (DEFAULT_SAMPLE_FORM,
+                                            DEFAULT_BEAM_MODE,
+                                            DEFAULT_RADIATION_PROBE,
+                                            DEFAULT_PEAK_PROFILE_TYPE,
+                                            DEFAULT_BACKGROUND_TYPE)
 
 
 class BaseExperiment(ABC):
@@ -122,7 +127,7 @@ class PowderExperiment(BaseExperiment):
                  type: ExperimentType):
         super().__init__(id=id,
                          type=type)
-        self._peak_profile_type = DEFAULT_PROFILE_TYPE
+        self._peak_profile_type = DEFAULT_PEAK_PROFILE_TYPE
         self._background_type = DEFAULT_BACKGROUND_TYPE
         self.peak = PeakFactory.create(beam_mode=self.type.beam_mode.value)
         self.linked_phases = LinkedPhases()
@@ -276,21 +281,19 @@ class ExperimentFactory:
         "single crystal": SingleCrystalExperiment
     }
 
-    @staticmethod
-    def create(
-            id: str,
-            sample_form: str,
-            beam_mode: str,
-            radiation_probe: str
-    ) -> Union[PowderExperiment, SingleCrystalExperiment]:
-        """Dynamically creates an Experiment instance with relevant attributes."""
-        expt_class = ExperimentFactory._supported.get(sample_form)
+    @classmethod
+    def create(cls,
+               id: str,
+               sample_form: DEFAULT_SAMPLE_FORM,
+               beam_mode: DEFAULT_BEAM_MODE,
+               radiation_probe: DEFAULT_RADIATION_PROBE) -> BaseExperiment:
+        # TODO: Add checks for expt_type and expt_class
         expt_type = ExperimentType(sample_form=sample_form,
                                    beam_mode=beam_mode,
                                    radiation_probe=radiation_probe)
-        expt_class_obj = expt_class(id=id,
-                                    type=expt_type)
-        return expt_class_obj
+        expt_class = cls._supported[sample_form]
+        instance = expt_class(id=id, type=expt_type)
+        return instance
 
 
 # User exposed API for convenience
@@ -298,9 +301,9 @@ class ExperimentFactory:
 # TODO: Think of where to keep default values for sample_form, beam_mode, radiation_probe, as they are also defined in the
 #  class ExperimentType
 def Experiment(id: str,
-               sample_form: str = "powder",
-               beam_mode: str = "constant wavelength",
-               radiation_probe: str = "neutron",
+               sample_form: str = DEFAULT_SAMPLE_FORM,
+               beam_mode: str = DEFAULT_BEAM_MODE,
+               radiation_probe: str = DEFAULT_RADIATION_PROBE,
                data_path: str = None):
     experiment = ExperimentFactory.create(
         id=id,

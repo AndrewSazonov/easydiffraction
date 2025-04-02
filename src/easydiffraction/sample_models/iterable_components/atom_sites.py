@@ -1,7 +1,7 @@
 from easydiffraction.core.parameter import (Parameter,
                                             Descriptor)
-from easydiffraction.core.component_base import (IterableComponent,
-                                                 IterableComponentRow)
+from easydiffraction.core.component import (IterableComponent,
+                                            IterableComponentRow)
 
 
 class AtomSite(IterableComponentRow):

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from easydiffraction.utils.formatting import error
-from easydiffraction.core.parameter import Parameter, Descriptor
+from easydiffraction.core.parameter import Descriptor, Parameter
 
 
 class ComponentBase(ABC):
@@ -32,7 +32,7 @@ class StandardComponent(ComponentBase):
         If the attribute is a Parameter or Descriptor, return its value by default
         """
         attr = self.__dict__.get(name, None)
-        if isinstance(attr, (Parameter, Descriptor)):
+        if isinstance(attr, (Descriptor, Parameter)):
             return attr.value
         raise AttributeError(f"{name} not found")
 
@@ -103,7 +103,7 @@ class IterableComponentRow(ABC):
         self._ordered_attrs = []
 
     def __setattr__(self, key, value):
-        if isinstance(value, (Parameter, Descriptor)):
+        if isinstance(value, (Descriptor, Parameter)):
             if not hasattr(self, "_ordered_attrs"):
                 super().__setattr__("_ordered_attrs", [])
             self._ordered_attrs.append(key)
