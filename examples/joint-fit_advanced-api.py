@@ -80,7 +80,7 @@ project.experiments.add(expt2)
 # Set calculator, minimizer and refinement strategy
 project.analysis.current_calculator = "crysfml"
 project.analysis.current_minimizer = "lmfit (leastsq)"
-project.analysis.refinement_strategy = 'combined'
+project.analysis.fit_mode = 'joint'
 
 # Define free parameters
 model.cell.length_a.free = True

@@ -30,7 +30,7 @@ class Summary:
         - Project metadata
         - Sample models and parameters
         - Experiment configurations and results
-        - Analysis and refinement results
+        - Analysis and fitting results
         """
         # ------------------------------------------
         print(section("Project info"))
@@ -102,7 +102,7 @@ class Summary:
             ], headers=["Parameter", "Value"], tablefmt="fancy_outline"))
 
         # ------------------------------------------
-        print(section("Refinement"))
+        print(section("Fitting"))
 
         print(paragraph("Calculation engine"))
         print(self.project.analysis.current_calculator)

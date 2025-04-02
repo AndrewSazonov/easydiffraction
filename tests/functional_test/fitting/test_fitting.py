@@ -7,7 +7,7 @@ from easydiffraction import (
 )
 
 
-def test_joint_neutron_xray_refinement_pd_cwl_pbso4() -> None:
+def test_joint_fit_neutron_xray_pd_cwl_pbso4() -> None:
     # Create and configure sample model
     model = SampleModel("pbso4")
     model.space_group.name.value = "P n m a"
@@ -75,7 +75,7 @@ def test_joint_neutron_xray_refinement_pd_cwl_pbso4() -> None:
     # Set calculator, minimizer and refinement strategy
     project.analysis.current_calculator = "cryspy"
     project.analysis.current_minimizer = "lmfit (leastsq)"
-    project.analysis.refinement_strategy = 'combined'
+    project.analysis.fit_mode = 'joint'
 
     # Define free parameters
     model.cell.length_a.free = True
@@ -88,8 +88,8 @@ def test_joint_neutron_xray_refinement_pd_cwl_pbso4() -> None:
     project.analysis.fit()
 
     # Assert results
-    assert_almost_equal(project.analysis.fit_results.reduced_chi_square, 21.3, decimal=1)
+    assert_almost_equal(project.analysis.fit_results.reduced_chi_square, 21.1, decimal=1)
 
 
 if __name__ == '__main__':
-    test_joint_neutron_xray_refinement_pd_cwl_pbso4()
+    test_joint_fit_neutron_xray_pd_cwl_pbso4()

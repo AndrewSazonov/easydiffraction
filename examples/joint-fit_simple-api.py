@@ -178,10 +178,9 @@ project.analysis.show_meas_vs_calc_chart(expt_id="xrd", x_min=26, x_max=28)
 
 # The following background points represent the baseline noise in the diffraction data.
 print(ed.section('Add background'))
+project.experiments["npd"].background_type = "point"
 project.experiments["npd"].show_supported_background_types()
 project.experiments["npd"].show_current_background_type()
-
-project.experiments["npd"].background_type = "line-segment"
 project.experiments["npd"].background.add(x=11.0, y=206.1624)
 project.experiments["npd"].background.add(x=15.0, y=194.75)
 project.experiments["npd"].background.add(x=20.0, y=194.505)
@@ -227,10 +226,10 @@ project.experiments["xrd"].linked_phases['pbso4'].scale.free = True
 
 project.analysis.show_free_params()
 
-print(ed.section('Set refinement strategy'))
-project.analysis.show_available_refinement_strategies()
-project.analysis.show_current_refinement_strategy()
-#project.analysis.refinement_strategy = 'single'
+print(ed.section('Set fit mode'))
+project.analysis.show_available_fit_modes()
+project.analysis.show_current_fit_mode()
+#project.analysis.fit_mode = 'single'
 
 print(ed.section('Set fitting engine'))
 project.analysis.show_available_minimizers()
@@ -266,10 +265,10 @@ print(ed.section('Show data charts after 3rd fitting'))
 project.analysis.show_meas_vs_calc_chart(expt_id="npd", x_min=62, x_max=66, show_residual=True)
 project.analysis.show_meas_vs_calc_chart(expt_id="xrd", x_min=26, x_max=28, show_residual=True)
 
-print(ed.section('Change refinement strategy'))
-project.analysis.show_available_refinement_strategies()
-project.analysis.show_current_refinement_strategy()
-project.analysis.refinement_strategy = 'combined'
+print(ed.section('Change fit mode'))
+project.analysis.show_available_fit_modes()
+project.analysis.show_current_fit_mode()
+project.analysis.fit_mode = 'joint'
 
 print(ed.section('Change calculator'))
 project.analysis.show_supported_calculators()

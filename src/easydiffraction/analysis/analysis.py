@@ -17,7 +17,7 @@ class Analysis:
         self.project = project
         self.calculator = Analysis._calculator  # Default calculator shared by project
         self._calculator_key = 'cryspy'  # Added to track the current calculator
-        self._refinement_strategy = 'single'
+        self._fit_mode = 'single'
         self.fitter = DiffractionMinimizer('lmfit (leastsq)')
 
     def show_refinable_params(self):
@@ -109,28 +109,33 @@ class Analysis:
         print(self.current_minimizer)
 
     @property
-    def refinement_strategy(self):
-        return self._refinement_strategy
+    def fit_mode(self):
+        return self._fit_mode
 
-    @refinement_strategy.setter
-    def refinement_strategy(self, strategy):
-        if strategy not in ['single', 'combined']:
-            raise ValueError("Refinement strategy must be either 'single' or 'combined'")
-        self._refinement_strategy = strategy
-        print(paragraph("Current refinement strategy changed to"))
-        print(self._refinement_strategy)
+    @fit_mode.setter
+    def fit_mode(self, strategy):
+        if strategy not in ['single', 'joint']:
+            raise ValueError("Fit mode must be either 'single' or 'joint'")
+        self._fit_mode = strategy
+        print(paragraph("Current ffit mode changed to"))
+        print(self._fit_mode)
 
-    def show_available_refinement_strategies(self):
+    def show_available_fit_modes(self):
         strategies = [
-            {"Strategy": "single", "Description": "Refine each experiment separately (one after another)"},
-            {"Strategy": "combined", "Description": "Perform joint refinement of all experiments"},
+            {
+                "Strategy": "single",
+                "Description": "Independent fitting of each experiment; no shared parameters"},
+            {
+                "Strategy": "joint",
+                "Description": "Simultaneous fitting of all experiments; some parameters are shared"
+            },
         ]
-        print(paragraph("Available refinement strategies"))
+        print(paragraph("Available fit modes"))
         print(tabulate(strategies, headers="keys", tablefmt="fancy_outline", showindex=False))
 
-    def show_current_refinement_strategy(self):
-        print(paragraph("Current refinement strategy"))
-        print(self.refinement_strategy)
+    def show_current_fit_mode(self):
+        print(paragraph("Current ffit mode"))
+        print(self.fit_mode)
 
     def calculate_pattern(self, expt_id):
         # Pattern is calculated for the given experiment
@@ -206,21 +211,20 @@ class Analysis:
             return
 
         # Run the fitting process
-        print(paragraph(f"Fitting using refinement strategy '{self.refinement_strategy}'..."))
         experiment_ids = list(experiments._items.keys())
 
-        if self.refinement_strategy == 'combined':
-            print(paragraph(f"Using all experiments 🔬 {experiment_ids} for joint refinement."))
+        if self.fit_mode == 'joint':
+            print(paragraph(f"Using all experiments 🔬 {experiment_ids} for '{self.fit_mode}' fitting"))
             self.fitter.fit(sample_models, experiments, calculator)
-        elif self.refinement_strategy == 'single':
+        elif self.fit_mode == 'single':
             for expt_id in list(experiments._items.keys()):
-                print(paragraph(f"Using experiment 🔬 '{expt_id}' for decoupled refinement."))
+                print(paragraph(f"Using experiment 🔬 '{expt_id}' for '{self.fit_mode}' fitting"))
                 experiment = experiments[expt_id]
                 dummy_experiments = Experiments()
                 dummy_experiments.add(experiment)
                 self.fitter.fit(sample_models, dummy_experiments, calculator)
         else:
-            raise NotImplementedError(f"Refinement strategy {self.refinement_strategy} not implemented yet.")
+            raise NotImplementedError(f"Fit mode {self.fit_mode} not implemented yet.")
 
         # After fitting, get the results
         self.fit_results = self.fitter.results
@@ -229,7 +233,7 @@ class Analysis:
         lines = []
         lines.append(f"_analysis.calculator_engine  {self.current_calculator}")
         lines.append(f"_analysis.fitting_engine  {self.current_minimizer}")
-        lines.append(f"_analysis.refinement_strategy  {self.refinement_strategy}")
+        lines.append(f"_analysis.fit_mode  {self.fit_mode}")
 
         return "\n".join(lines)
 

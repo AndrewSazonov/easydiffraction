@@ -22,6 +22,9 @@ class Collection:
         Collects all parameters from each item and its components, including nested collections.
         Returns a list of dictionaries with full CIF names and attributes.
         """
+        # TODO: Fails to handle properly iterable_components
+        # TODO: Need to refactor this method to use the new parameter,
+        #  component and collection based system
         params = []
 
         for item_id, item in self._items.items():
