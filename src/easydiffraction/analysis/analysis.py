@@ -117,7 +117,9 @@ class Analysis:
         if strategy not in ['single', 'joint']:
             raise ValueError("Fit mode must be either 'single' or 'joint'")
         self._fit_mode = strategy
-        print(paragraph("Current ffit mode changed to"))
+        if strategy == 'joint':
+            self.joint_fit = { id: 0.5 for id in self.project.experiments.ids }  # Pre-populate with all experiments 
+        print(paragraph("Current fit mode changed to"))
         print(self._fit_mode)
 
     def show_available_fit_modes(self):
@@ -215,7 +217,8 @@ class Analysis:
 
         if self.fit_mode == 'joint':
             print(paragraph(f"Using all experiments 🔬 {experiment_ids} for '{self.fit_mode}' fitting"))
-            self.fitter.fit(sample_models, experiments, calculator)
+            print(self.joint_fit)
+            self.fitter.fit(sample_models, experiments, calculator, weights=self.joint_fit)
         elif self.fit_mode == 'single':
             for expt_id in list(experiments._items.keys()):
                 print(paragraph(f"Using experiment 🔬 '{expt_id}' for '{self.fit_mode}' fitting"))
